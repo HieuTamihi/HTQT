@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTQT - Hệ thống Quản trị Tổng thể | Cung Văn hóa Lao động TP.HCM</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .badge-green { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge-yellow { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .badge-blue { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge-orange { background-color: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .badge-red { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-gray { background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 antialiased min-h-screen flex flex-col">
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="bg-slate-900 text-white sticky top-0 z-40 border-b border-slate-800 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-blue-500/30">
+            C
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-base tracking-tight text-white">HTQT CVHLĐ</span>
+              <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                HTML + CSS + JS
+              </span>
+            </div>
+            <p class="text-xs text-slate-400">Cung Văn hóa Lao động TP.HCM</p>
+          </div>
+        </div>
+
+        <!-- Center Controls -->
+        <div class="hidden lg:flex items-center space-x-3">
+          <!-- Chọn cơ sở -->
+          <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs">
+            <i data-lucide="building-2" class="w-4 h-4 text-amber-400 mr-2"></i>
+            <select id="facilitySelect" onchange="changeFacility(this.value)" class="bg-transparent text-white font-medium outline-none cursor-pointer pr-2">
+              <option value="TS" class="bg-slate-900 text-white">[TS] Trụ sở chính - 55B Nguyễn Thị Minh Khai, Q.1</option>
+              <option value="CS1" class="bg-slate-900 text-white">[CS1] Cơ sở 1 (CLB Thể thao & Khiêu vũ)</option>
+              <option value="CS2" class="bg-slate-900 text-white">[CS2] Cơ sở 2 (Khu biểu diễn nghệ thuật)</option>
+              <option value="CS3" class="bg-slate-900 text-white">[CS3] Cơ sở 3 (Trung tâm Kỹ năng)</option>
+              <option value="CS4" class="bg-slate-900 text-white">[CS4] Cơ sở 4 (CLB Bơi lặn & Thể hình)</option>
+              <option value="CS5" class="bg-slate-900 text-white">[CS5] Cơ sở 5 (Khu Sinh hoạt Thanh niên)</option>
+              <option value="CS6" class="bg-slate-900 text-white">[CS6] Cơ sở 6 (Nhà tập Đa năng)</option>
+            </select>
+          </div>
+
+          <!-- Bộ chuyển vai trò (Role Switcher) -->
+          <div class="flex items-center bg-blue-950/70 border border-blue-700/60 rounded-lg px-2.5 py-1.5 text-xs text-blue-100">
+            <i data-lucide="user-check" class="w-4 h-4 text-blue-400 mr-2"></i>
+            <div class="flex flex-col text-left">
+              <span class="text-[9px] text-blue-300 font-bold uppercase tracking-wider">Vai trò giả lập:</span>
+              <select id="roleSelect" onchange="changeRole(this.value)" class="bg-transparent text-white font-bold outline-none cursor-pointer pr-2 text-xs">
+                <option value="ALL" class="bg-slate-900 text-amber-300 font-bold">⚡ [Trình chiếu] Tất cả màn hình</option>
+                <optgroup label="Lãnh đạo & Kế toán" class="bg-slate-900 text-slate-300">
+                  <option value="BAN_GIAM_DOC">Ban Giám đốc (Yêu cầu 2FA)</option>
+                  <option value="KE_TOAN_TONG_HOP">Kế toán tổng hợp (Yêu cầu 2FA)</option>
+                  <option value="KE_TOAN_THU">Kế toán thu</option>
+                  <option value="KE_TOAN_THANH_TOAN">Kế toán thanh toán (Yêu cầu 2FA)</option>
+                  <option value="TO_TRUONG_TAI_VU">Tổ trưởng Tổ Tài vụ</option>
+                  <option value="THU_QUY">Thủ quỹ</option>
+                </optgroup>
+                <optgroup label="Học vụ & Cơ sở" class="bg-slate-900 text-slate-300">
+                  <option value="TRUONG_CO_SO">Trưởng cơ sở</option>
+                  <option value="NHAN_VIEN_GHI_DANH">Nhân viên ghi danh</option>
+                  <option value="PHONG_VAN_HOA">Phòng Văn hóa</option>
+                  <option value="GIAO_VIEN">Giáo viên</option>
+                  <option value="HOC_VIEN">Học viên (Đăng ký online)</option>
+                </optgroup>
+                <optgroup label="Nhân sự & KPI" class="bg-slate-900 text-slate-300">
+                  <option value="TRUONG_PHONG_TCHQT">Trưởng phòng TC-HC-QT (CBCC & KPI)</option>
+                  <option value="LANH_DAO_PHONG_CO_SO">Lãnh đạo Phòng / Cơ sở</option>
+                  <option value="NGUOI_DUNG_NOI_BO">Người dùng nội bộ (MH-15 & KPI)</option>
+                  <option value="QUAN_TRI_HE_THONG">Quản trị hệ thống (Yêu cầu 2FA)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+
+          <!-- 2FA Badge -->
+          <button onclick="open2FAModal()" id="badge2FA" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/60 transition">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            <span>2FA: Đã xác thực</span>
+          </button>
+        </div>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-2">
+          <!-- Trạng thái đồng bộ -->
+          <button onclick="toggleSyncModal()" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-700 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-blue-400"></i>
+            <span class="hidden sm:inline">Kết nối ngoài</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          </button>
+
+          <!-- Mobile View Simulator Toggle -->
+          <button onclick="toggleMobileMode()" id="btnMobileToggle" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition cursor-pointer bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+            <span class="hidden md:inline" id="btnMobileToggleText">Giả lập Mobile</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= BODY LAYOUT ================= -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-[calc(100vh-4rem)] shrink-0 overflow-y-auto" id="sidebarContainer">
+      <div class="p-3 border-b border-slate-800 bg-slate-950/40 flex justify-between items-center">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Danh mục màn hình</span>
+        <span id="screenCountBadge" class="text-[10px] bg-blue-900/60 text-blue-300 font-bold px-2 py-0.5 rounded-full border border-blue-700/50">
+          32 Màn hình
+        </span>
+      </div>
+      <div class="flex-1 p-2 space-y-4" id="sidebarMenu">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="p-3 border-t border-slate-800 bg-slate-950/60 text-center">
+        <p className="text-[10px] text-slate-500">Bản quyền giải pháp thuộc về Ringnet</p>
+        <p className="text-[10px] text-slate-600 font-mono">Phiên bản UI nháp 1.0 (HTML/CSS/JS)</p>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8" id="mainContainer">
+      <div id="desktopWrapper" class="max-w-7xl mx-auto">
+        <div id="screenContent">
+          <!-- Screen HTML rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Mobile Device Frame Container (Hidden by default) -->
+      <div id="mobileWrapper" class="hidden flex flex-col items-center justify-center py-4">
+        <div class="text-center mb-3">
+          <span class="text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full">
+            📱 Khung Điện thoại Thông minh (Khổ chuẩn 390px)
+          </span>
+          <p class="text-[11px] text-slate-500 mt-1">Đang hiển thị màn hình tối ưu di động</p>
+        </div>
+        <div class="w-[390px] h-[820px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-700 relative overflow-hidden flex flex-col">
+          <div class="w-28 h-5 bg-black rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-slate-900"></div>
+          </div>
+          <div class="flex-1 bg-slate-50 rounded-[36px] overflow-y-auto p-4 text-slate-900" id="mobileScreenContent">
+            <!-- Screen content replicated for mobile view -->
+          </div>
+          <div class="w-32 h-1 bg-slate-600 rounded-full mx-auto mt-2 shrink-0"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <!-- 2FA Modal -->
+  <div id="modal2FA" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center border border-slate-200">
+      <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+        <i data-lucide="shield-check" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Xác thực 2 bước (2FA)</h3>
+      <p class="text-xs text-slate-500 mb-4" id="role2FAName">Vai trò này yêu cầu xác thực OTP</p>
+      <div class="flex justify-center gap-2 mb-6">
+        <input type="text" maxlength="1" value="1" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+        <input type="text" maxlength="1" value="2" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+        <input type="text" maxlength="1" value="3" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+        <input type="text" maxlength="1" value="4" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+        <input type="text" maxlength="1" value="5" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+        <input type="text" maxlength="1" value="6" class="w-10 h-11 text-center font-bold border rounded-lg text-lg">
+      </div>
+      <button onclick="confirm2FA()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-blue-600/30">
+        Xác nhận đăng nhập
+      </button>
+      <button onclick="close2FAModal()" class="mt-3 text-xs text-slate-400 hover:text-slate-600">Đóng lại</button>
+    </div>
+  </div>
+
+  <!-- Cancel Modal (Không xóa mà Hủy kèm lý do) -->
+  <div id="modalCancel" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b bg-rose-50/50">
+        <div class="flex items-center space-x-2 text-rose-700 font-bold text-sm">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+          <span id="cancelModalTitle">Xác nhận Hủy bản ghi</span>
+        </div>
+        <button onclick="closeCancelModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-6 space-y-4 text-sm">
+        <p class="text-slate-600">
+          Bạn đang yêu cầu <span class="text-rose-600 font-bold">HỦY</span> bản ghi: <strong id="cancelTargetName" class="bg-slate-100 px-2 py-0.5 rounded"></strong>
+        </p>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+          <strong>Quy chế CVHLĐ:</strong> Dữ liệu nghiệp vụ không bị xóa vĩnh viễn; hành động hủy sẽ ghi nhận vết nhật ký kiểm toán.
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+            Lý do hủy bắt buộc <span class="text-rose-500">*</span>
+          </label>
+          <textarea id="cancelReasonInput" rows="3" placeholder="Nhập lý do chi tiết..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:border-rose-500"></textarea>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t">
+          <button onclick="closeCancelModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Đóng</button>
+          <button onclick="submitCancel()" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-sm">Xác nhận Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- External Sync Status Modal -->
+  <div id="modalSync" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full border border-slate-200 p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-600"></i>
+          <span>Trạng thái kết nối phần mềm ngoài</span>
+        </h3>
+        <button onclick="toggleSyncModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="space-y-2.5 text-xs">
+        <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+          <div><strong class="text-slate-900">MISA eShop:</strong> <span class="text-slate-500">Mã hàng = Mã lớp, Đơn quầy & Sân bãi</span></div>
+          <span class="badge-green px-2 py-0.5 rounded font-bold">Đang kết nối</span>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+          <div><strong class="text-slate-900">Hóa đơn điện tử:</strong> <span class="text-slate-500">Khớp đơn tự động qua mã đơn</span></div>
+          <span class="badge-green px-2 py-0.5 rounded font-bold">Sẵn sàng</span>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+          <div><strong class="text-slate-900">Ngân hàng (VietQR):</strong> <span class="text-slate-500">Trích mã đơn theo nội dung CK</span></div>
+          <span class="badge-green px-2 py-0.5 rounded font-bold">Hoạt động</span>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+          <div><strong class="text-slate-900">MISA Kế toán:</strong> <span class="text-slate-500">Xuất file XML/Excel chứng từ</span></div>
+          <span class="badge-green px-2 py-0.5 rounded font-bold">Sẵn sàng xuất</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- Application State ---
+    let currentRole = 'ALL';
+    let currentFacility = 'TS';
+    let currentScreenId = 'MH-21';
+    let isMobileMode = false;
+    let cancelCallback = null;
+
+    // --- Menu Definitions ---
+    const MENU_DEFINITIONS = [
+      { id: 'MH-01', code: 'MH-01', title: 'Danh mục cơ sở, dịch vụ, nguồn', icon: 'folder-tree', group: '1. Danh mục & Bảng giá' },
+      { id: 'MH-02', code: 'MH-02', title: 'Bảng giá dịch vụ theo QĐ', icon: 'tag', group: '1. Danh mục & Bảng giá' },
+      { id: 'MH-03', code: 'MH-03', title: 'Kế hoạch chiêu sinh', icon: 'calendar-days', group: '2. Ghi danh & Học vụ' },
+      { id: 'MH-04', code: 'MH-04', title: 'Quầy ghi danh', icon: 'credit-card', group: '2. Ghi danh & Học vụ', mobile: true },
+      { id: 'MH-05', code: 'MH-05', title: 'Đăng ký trực tuyến', icon: 'globe', group: '2. Ghi danh & Học vụ', mobile: true },
+      { id: 'MH-06', code: 'MH-06', title: 'Quản lý lô thẻ giấy', icon: 'layers', group: '2. Ghi danh & Học vụ' },
+      { id: 'MH-07', code: 'MH-07', title: 'Chuyển lớp, bảo lưu', icon: 'arrow-right-left', group: '2. Ghi danh & Học vụ' },
+      { id: 'MH-08', code: 'MH-08', title: 'Điểm danh lớp học', icon: 'user-check', group: '2. Ghi danh & Học vụ', mobile: true },
+      { id: 'MH-09', code: 'MH-09', title: 'Kết ca & Nộp quỹ', icon: 'receipt', group: '3. Đối soát & Chốt sổ', mobile: true },
+      { id: 'MH-10', code: 'MH-10', title: 'Nhập sao kê ngân hàng', icon: 'file-spreadsheet', group: '3. Đối soát & Chốt sổ' },
+      { id: 'MH-11', code: 'MH-11', title: 'Đối soát 3 bên (Đơn-HĐ-Tiền)', icon: 'check-check', group: '3. Đối soát & Chốt sổ' },
+      { id: 'MH-12', code: 'MH-12', title: 'Chốt ca & Khóa ngày (21:00)', icon: 'lock', group: '3. Đối soát & Chốt sổ' },
+      { id: 'MH-13', code: 'MH-13', title: 'Hồ sơ giáo viên & HĐGD', icon: 'graduation-cap', group: '4. Thù lao giáo viên' },
+      { id: 'MH-14', code: 'MH-14', title: 'Bảng kê thù lao cuối khóa', icon: 'calculator', group: '4. Thù lao giáo viên', mobile: true },
+      { id: 'MH-15', code: 'MH-15', title: 'Đề xuất chi (Luồng A/B)', icon: 'file-text', group: '5. Đề xuất chi & Hợp đồng' },
+      { id: 'MH-16', code: 'MH-16', title: 'Kiểm soát chi hồ sơ', icon: 'shield-alert', group: '5. Đề xuất chi & Hợp đồng' },
+      { id: 'MH-17', code: 'MH-17', title: 'Hộp duyệt Ban Giám đốc', icon: 'inbox', group: '5. Đề xuất chi & Hợp đồng' },
+      { id: 'MH-18', code: 'MH-18', title: 'Hợp đồng, dự toán, công nợ', icon: 'file-check-2', group: '5. Đề xuất chi & Hợp đồng' },
+      { id: 'MH-19', code: 'MH-19', title: 'Chứng từ kế toán MISA', icon: 'file-code-2', group: '6. Kế toán & Quản trị' },
+      { id: 'MH-20', code: 'MH-20', title: 'Ánh xạ TK & Tham số (21:00)', icon: 'settings-2', group: '6. Kế toán & Quản trị' },
+      { id: 'MH-21', code: 'MH-21', title: 'Dashboard Ban Giám đốc', icon: 'bar-chart-3', group: '6. Kế toán & Quản trị' },
+      { id: 'MH-22', code: 'MH-22', title: 'Báo cáo & Thống kê', icon: 'pie-chart', group: '6. Kế toán & Quản trị' },
+      { id: 'MH-23', code: 'MH-23', title: 'Người dùng & Nhật ký audit', icon: 'users', group: '6. Kế toán & Quản trị' },
+      { id: 'CBCC-01', code: 'CBCC', title: 'Danh sách hồ sơ CBCC', icon: 'book-open', group: '7. Hồ sơ CBCC' },
+      { id: 'CBCC-02', code: 'CBCC-CT', title: 'Chi tiết hồ sơ (5 Tabs)', icon: 'file-text', group: '7. Hồ sơ CBCC' },
+      { id: 'KPI-01', code: 'KPI 7.1', title: 'Danh mục công việc đơn vị', icon: 'target', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-02', code: 'KPI 7.2', title: 'Quản lý nhiệm vụ (Giao/Nhận)', icon: 'clipboard-list', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-03', code: 'KPI 7.3', title: 'Nộp sản phẩm (5 Mức %)', icon: 'send', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-04', code: 'KPI 7.4', title: 'Bảng tổng hợp cuối quý (30-70)', icon: 'award', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-05', code: 'KPI 7.5', title: 'Bình xét cơ sở / phòng', icon: 'sliders-horizontal', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-06', code: 'KPI 7.6', title: 'Tham mưu kết quả (TP TC-HC)', icon: 'sliders-horizontal', group: '8. Quản lý KPI & Đánh giá' },
+      { id: 'KPI-07', code: 'KPI 7.7', title: 'Biểu quyết Ban Giám đốc', icon: 'award', group: '8. Quản lý KPI & Đánh giá' },
+    ];
+
+    // --- Role Access Map ---
+    const ROLE_ACCESS = {
+      BAN_GIAM_DOC: ['MH-02', 'MH-17', 'MH-21', 'MH-22', 'KPI-07'],
+      KE_TOAN_TONG_HOP: ['MH-01', 'MH-02', 'MH-19', 'MH-20', 'MH-22'],
+      KE_TOAN_THU: ['MH-10', 'MH-11', 'MH-12', 'MH-19', 'MH-22'],
+      KE_TOAN_THANH_TOAN: ['MH-13', 'MH-14', 'MH-16', 'MH-18', 'MH-22'],
+      TO_TRUONG_TAI_VU: ['MH-06'],
+      THU_QUY: ['MH-09'],
+      TRUONG_CO_SO: ['MH-11', 'MH-12'],
+      NHAN_VIEN_GHI_DANH: ['MH-04', 'MH-07', 'MH-09'],
+      PHONG_VAN_HOA: ['MH-03', 'MH-13'],
+      GIAO_VIEN: ['MH-08', 'MH-14'],
+      HOC_VIEN: ['MH-05'],
+      QUAN_TRI_HE_THONG: ['MH-23'],
+      NGUOI_DUNG_NOI_BO: ['MH-15', 'KPI-02', 'KPI-03', 'KPI-04'],
+      TRUONG_PHONG_TCHQT: ['CBCC-01', 'CBCC-02', 'KPI-01', 'KPI-06', 'MH-23'],
+      LANH_DAO_PHONG_CO_SO: ['KPI-02', 'KPI-05'],
+      ALL: MENU_DEFINITIONS.map(m => m.id)
+    };
+
+    // --- Switch Role ---
+    function changeRole(role) {
+      currentRole = role;
+      const requires2FA = ['BAN_GIAM_DOC', 'KE_TOAN_TONG_HOP', 'KE_TOAN_THANH_TOAN', 'QUAN_TRI_HE_THONG'].includes(role);
+      const badge2FA = document.getElementById('badge2FA');
+      if (requires2FA) {
+        badge2FA.classList.remove('hidden');
+        open2FAModal();
+      } else {
+        badge2FA.classList.add('hidden');
+      }
+
+      const accessible = ROLE_ACCESS[role] || ROLE_ACCESS.ALL;
+      if (!accessible.includes(currentScreenId)) {
+        currentScreenId = accessible[0];
+      }
+      renderSidebar();
+      renderCurrentScreen();
+    }
+
+    // --- Switch Facility ---
+    function changeFacility(fac) {
+      currentFacility = fac;
+      renderCurrentScreen();
+    }
+
+    // --- Toggle Mobile Mode ---
+    function toggleMobileMode() {
+      isMobileMode = !isMobileMode;
+      const desktop = document.getElementById('desktopWrapper');
+      const mobile = document.getElementById('mobileWrapper');
+      const btn = document.getElementById('btnMobileToggle');
+      const btnText = document.getElementById('btnMobileToggleText');
+
+      if (isMobileMode) {
+        desktop.classList.add('hidden');
+        mobile.classList.remove('hidden');
+        btn.classList.add('bg-amber-500', 'text-slate-950', 'border-amber-400');
+        btn.classList.remove('bg-slate-800', 'text-slate-300');
+        btnText.innerText = 'Xem Mobile (Đang bật)';
+      } else {
+        desktop.classList.remove('hidden');
+        mobile.classList.add('hidden');
+        btn.classList.remove('bg-amber-500', 'text-slate-950', 'border-amber-400');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+        btnText.innerText = 'Giả lập Mobile';
+      }
+      renderCurrentScreen();
+    }
+
+    // --- Render Sidebar ---
+    function renderSidebar() {
+      const accessible = ROLE_ACCESS[currentRole] || ROLE_ACCESS.ALL;
+      const items = MENU_DEFINITIONS.filter(m => accessible.includes(m.id));
+      document.getElementById('screenCountBadge').innerText = `${items.length} Màn hình`;
+
+      // Group items
+      const groups = {};
+      items.forEach(item => {
+        if (!groups[item.group]) groups[item.group] = [];
+        groups[item.group].push(item);
+      });
+
+      let html = '';
+      for (const [groupName, groupItems] of Object.entries(groups)) {
+        html += `<div class="space-y-1">
+          <h4 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 py-1">${groupName}</h4>`;
+        groupItems.forEach(item => {
+          const isActive = item.id === currentScreenId;
+          const bgClass = isActive ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800 hover:text-white';
+          html += `
+            <button onclick="selectScreen('${item.id}')" class="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition cursor-pointer text-left ${bgClass}">
+              <div class="flex items-center space-x-2.5 truncate">
+                <i data-lucide="${item.icon}" class="w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}"></i>
+                <span class="truncate">${item.title}</span>
+              </div>
+              <div class="flex items-center space-x-1 shrink-0 ml-1">
+                ${item.mobile ? `<span class="text-[9px] px-1 py-0.2 rounded font-mono ${isActive ? 'bg-blue-700 text-blue-200' : 'bg-slate-800 text-amber-400 border border-amber-500/30'}">📱</span>` : ''}
+                <span class="text-[10px] font-mono px-1 rounded ${isActive ? 'text-blue-100 bg-blue-700/60' : 'text-slate-400 bg-slate-800/60'}">${item.code}</span>
+              </div>
+            </button>
+          `;
+        });
+        html += `</div>`;
+      }
+      document.getElementById('sidebarMenu').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function selectScreen(id) {
+      currentScreenId = id;
+      renderSidebar();
+      renderCurrentScreen();
+    }
+
+    // --- Modal Controls ---
+    function open2FAModal() {
+      document.getElementById('modal2FA').classList.remove('hidden');
+      lucide.createIcons();
+    }
+    function close2FAModal() {
+      document.getElementById('modal2FA').classList.add('hidden');
+    }
+    function confirm2FA() {
+      alert('Xác thực 2 bước thành công!');
+      close2FAModal();
+    }
+    function toggleSyncModal() {
+      const el = document.getElementById('modalSync');
+      el.classList.toggle('hidden');
+      lucide.createIcons();
+    }
+    function openCancelModal(title, targetName, onConfirm) {
+      document.getElementById('cancelModalTitle').innerText = title;
+      document.getElementById('cancelTargetName').innerText = targetName;
+      document.getElementById('cancelReasonInput').value = '';
+      cancelCallback = onConfirm;
+      document.getElementById('modalCancel').classList.remove('hidden');
+      lucide.createIcons();
+    }
+    function closeCancelModal() {
+      document.getElementById('modalCancel').classList.add('hidden');
+    }
+    function submitCancel() {
+      const reason = document.getElementById('cancelReasonInput').value.trim();
+      if (!reason) {
+        alert('Vui lòng nhập lý do hủy theo quy chế bắt buộc!');
+        return;
+      }
+      if (cancelCallback) cancelCallback(reason);
+      closeCancelModal();
+    }
+
+    // --- Screen Render Engine ---
+    function renderCurrentScreen() {
+      let content = '';
+      switch (currentScreenId) {
+        case 'MH-01': content = getScreenMH01(); break;
+        case 'MH-02': content = getScreenMH02(); break;
+        case 'MH-03': content = getScreenMH03(); break;
+        case 'MH-04': content = getScreenMH04(); break;
+        case 'MH-05': content = getScreenMH05(); break;
+        case 'MH-06': content = getScreenMH06(); break;
+        case 'MH-07': content = getScreenMH07(); break;
+        case 'MH-08': content = getScreenMH08(); break;
+        case 'MH-09': content = getScreenMH09(); break;
+        case 'MH-10': content = getScreenMH10(); break;
+        case 'MH-11': content = getScreenMH11(); break;
+        case 'MH-12': content = getScreenMH12(); break;
+        case 'MH-13': content = getScreenMH13(); break;
+        case 'MH-14': content = getScreenMH14(); break;
+        case 'MH-15': content = getScreenMH15(); break;
+        case 'MH-16': content = getScreenMH16(); break;
+        case 'MH-17': content = getScreenMH17(); break;
+        case 'MH-18': content = getScreenMH18(); break;
+        case 'MH-19': content = getScreenMH19(); break;
+        case 'MH-20': content = getScreenMH20(); break;
+        case 'MH-21': content = getScreenMH21(); break;
+        case 'MH-22': content = getScreenMH22(); break;
+        case 'MH-23': content = getScreenMH23(); break;
+        case 'CBCC-01':
+        case 'CBCC-02': content = getScreenCBCC(); break;
+        case 'KPI-01': content = getScreenKPI('7.1'); break;
+        case 'KPI-02': content = getScreenKPI('7.2'); break;
+        case 'KPI-03': content = getScreenKPI('7.3'); break;
+        case 'KPI-04': content = getScreenKPI('7.4'); break;
+        case 'KPI-05': content = getScreenKPI('7.5'); break;
+        case 'KPI-06': content = getScreenKPI('7.6'); break;
+        case 'KPI-07': content = getScreenKPI('7.7'); break;
+        default: content = getScreenMH21(); break;
+      }
+
+      document.getElementById('screenContent').innerHTML = content;
+      document.getElementById('mobileScreenContent').innerHTML = content;
+      lucide.createIcons();
+    }
+
+    // ================= SCREEN TEMPLATES =================
+    function getScreenMH01() {
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-01</span>
+                <h1 class="text-xl font-bold text-slate-900">Danh mục cơ sở, dịch vụ, nguồn kinh phí</h1>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Khai báo 7 cơ sở, tiền tố mã hàng eShop (TS-, CS1-..), dịch vụ môn học và nguồn kinh phí</p>
+            </div>
+            <button onclick="alert('Mở form Thêm mới danh mục')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+              + Thêm mới
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+            <div class="p-3 bg-slate-50 border-b font-bold text-xs text-slate-700">Danh mục 7 Cơ sở trực thuộc & Tiền tố MISA eShop</div>
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã đơn vị</th><th class="p-3">Tên cơ sở</th><th class="p-3">Địa chỉ</th><th class="p-3">Tiền tố eShop</th><th class="p-3">Trạng thái</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-bold text-blue-600">TS</td><td class="p-3 font-medium">Trụ sở chính</td><td class="p-3 text-slate-500">55B Nguyễn Thị Minh Khai, Q.1</td><td class="p-3 font-mono font-bold text-amber-700 bg-amber-50 rounded">TS-*</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded font-medium">Hoạt động</span></td><td class="p-3 text-right"><button onclick="openCancelModal('Ngừng dùng cơ sở', 'Trụ sở chính', (r) => alert('Đã ngừng dùng: ' + r))" class="text-rose-600 hover:underline">Ngừng dùng</button></td></tr>
+                <tr><td class="p-3 font-bold text-blue-600">CS1</td><td class="p-3 font-medium">Cơ sở 1 (CLB Thể thao & Khiêu vũ)</td><td class="p-3 text-slate-500">01 Huyền Trân Công Chúa, Q.1</td><td class="p-3 font-mono font-bold text-amber-700 bg-amber-50 rounded">CS1-*</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded font-medium">Hoạt động</span></td><td class="p-3 text-right"><button onclick="openCancelModal('Ngừng dùng cơ sở', 'Cơ sở 1', (r) => alert('Đã ngừng dùng: ' + r))" class="text-rose-600 hover:underline">Ngừng dùng</button></td></tr>
+                <tr><td class="p-3 font-bold text-blue-600">CS2</td><td class="p-3 font-medium">Cơ sở 2 (Khu biểu diễn nghệ thuật)</td><td class="p-3 text-slate-500">86 Cách Mạng Tháng 8, Q.3</td><td class="p-3 font-mono font-bold text-amber-700 bg-amber-50 rounded">CS2-*</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded font-medium">Hoạt động</span></td><td class="p-3 text-right"><button onclick="openCancelModal('Ngừng dùng cơ sở', 'Cơ sở 2', (r) => alert('Đã ngừng dùng: ' + r))" class="text-rose-600 hover:underline">Ngừng dùng</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH02() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-02</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Bảng giá dịch vụ theo Quyết định</h1>
+              <p class="text-xs text-slate-500">Giá đang hiệu lực không được sửa đổi trực tiếp</p>
+            </div>
+            <button onclick="alert('Mở form ban hành quyết định giá mới')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Tạo QĐ giá mới</button>
+          </div>
+
+          <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs">
+            <div>
+              <span class="font-bold text-blue-900">Quyết định đang hiệu lực: QĐ-88/QĐ-CVHLĐ</span>
+              <p class="text-slate-600 mt-0.5">Ngày ký: 01/01/2026 • Ngày hiệu lực: 15/01/2026 • Người ký: Giám đốc Cung Văn hóa</p>
+            </div>
+            <span class="badge-green px-3 py-1 rounded-full font-bold">🔒 Khóa sửa trực tiếp</span>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã DV</th><th class="p-3">Tên dịch vụ</th><th class="p-3">Đơn vị tính</th><th class="p-3 text-right">Đơn giá niêm yết</th><th class="p-3 text-center">Tình trạng</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-bold text-blue-600">KV-CB</td><td class="p-3 font-medium">Khiêu vũ giao tiếp căn bản</td><td class="p-3 text-slate-500">Khóa 24 buổi</td><td class="p-3 text-right font-mono font-bold text-slate-900">1.200.000 đ</td><td class="p-3 text-center"><span class="badge-gray px-2 py-0.5 rounded font-mono">Đã chốt theo QĐ</span></td></tr>
+                <tr><td class="p-3 font-bold text-blue-600">KV-NC</td><td class="p-3 font-medium">Khiêu vũ Latin chuyên đề</td><td class="p-3 text-slate-500">Khóa 24 buổi</td><td class="p-3 text-right font-mono font-bold text-slate-900">1.800.000 đ</td><td class="p-3 text-center"><span class="badge-gray px-2 py-0.5 rounded font-mono">Đã chốt theo QĐ</span></td></tr>
+                <tr><td class="p-3 font-bold text-blue-600">AERO-01</td><td class="p-3 font-medium">Aerobic năng lượng buổi sáng</td><td class="p-3 text-slate-500">Tháng (12 buổi)</td><td class="p-3 text-right font-mono font-bold text-slate-900">650.000 đ</td><td class="p-3 text-center"><span class="badge-gray px-2 py-0.5 rounded font-mono">Đã chốt theo QĐ</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH03() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-03</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Kế hoạch chiêu sinh & Quản lý lớp</h1>
+              <p class="text-xs text-slate-500">Đẩy mặt hàng sang eShop, nhân bản khóa trước, mở bán / đóng lớp</p>
+            </div>
+            <div class="flex space-x-2">
+              <button onclick="alert('Đã đẩy thành công tất cả mặt hàng sang MISA eShop (mã hàng = mã lớp)!')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">☁️ Đẩy eShop hàng loạt</button>
+              <button onclick="alert('Mở form tạo lớp mới')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Thêm lớp</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã lớp (eShop SKU)</th><th class="p-3">Tên lớp</th><th class="p-3">Lịch & Phòng</th><th class="p-3 text-center">Sĩ số</th><th class="p-3 text-right">Học phí</th><th class="p-3">Giáo viên</th><th class="p-3">Trạng thái</th><th class="p-3 text-center">eShop</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">TS-KV01</td><td class="p-3 font-semibold text-slate-900">Khiêu vũ giao tiếp Căn bản K11</td><td class="p-3">T2-4-6 (18:00 - 19:30)<br><span class="text-slate-400">Hội trường A</span></td><td class="p-3 text-center font-bold">32/35</td><td class="p-3 text-right font-mono font-bold">1.200.000 đ</td><td class="p-3">Nguyễn Hải Đăng (65%)</td><td class="p-3"><span class="badge-yellow px-2 py-0.5 rounded font-bold">Mở bán</span></td><td class="p-3 text-center"><span class="badge-green px-2 py-0.5 rounded">✓ Đã đẩy</span></td><td class="p-3 text-right space-x-1"><button onclick="alert('Đã nhân bản lớp sang bản nháp mới!')" class="text-blue-600 hover:underline">Nhân bản</button></td></tr>
+                <tr><td class="p-3 font-mono font-bold text-blue-600">TS-KV02</td><td class="p-3 font-semibold text-slate-900">Khiêu vũ Latin Chuyên đề</td><td class="p-3">T3-5-7 (19:30 - 21:00)<br><span class="text-slate-400">Hội trường B</span></td><td class="p-3 text-center font-bold text-rose-600">25/25</td><td class="p-3 text-right font-mono font-bold">1.800.000 đ</td><td class="p-3">Trần Thị Mai Loan (70%)</td><td class="p-3"><span class="badge-blue px-2 py-0.5 rounded font-bold">Đủ sĩ số</span></td><td class="p-3 text-center"><span class="badge-green px-2 py-0.5 rounded">✓ Đã đẩy</span></td><td class="p-3 text-right space-x-1"><button onclick="alert('Đã đóng lớp')" class="text-amber-600 hover:underline">Đóng lớp</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH04() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-04</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold ml-1">📱 Tối ưu Mobile</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Quầy ghi danh & Bán vé</h1>
+              <p class="text-xs text-slate-500">Tìm học viên, chọn lớp còn chỗ, cấp số thẻ giấy, tạo đơn eShop và in biên nhận</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-xs border p-5 space-y-4 text-xs">
+              <h3 class="font-bold text-slate-900 text-sm border-b pb-2">1. Thông tin học viên & Lớp học</h3>
+              <div class="flex gap-2">
+                <input type="text" placeholder="Nhập SĐT học viên..." value="0903123456" class="flex-1 border p-2 rounded-lg">
+                <button onclick="alert('Tìm thấy: Trần Minh Hoàng')" class="px-3 py-2 bg-slate-900 text-white rounded-lg font-bold">Tìm</button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div><label class="block text-slate-500 mb-0.5">Họ tên *</label><input type="text" value="Trần Minh Hoàng" class="w-full border p-2 rounded-lg font-bold"></div>
+                <div><label class="block text-slate-500 mb-0.5">Số điện thoại *</label><input type="text" value="0903123456" class="w-full border p-2 rounded-lg"></div>
+              </div>
+              <div>
+                <label class="block text-slate-500 mb-0.5">Chọn lớp còn chỗ</label>
+                <select class="w-full border p-2 rounded-lg bg-white font-bold">
+                  <option>TS-KV01 - Khiêu vũ căn bản (1.200.000 đ) - Còn 3 chỗ</option>
+                  <option>CS1-AERO01 - Aerobic Năng lượng (650.000 đ) - Còn 22 chỗ</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div><label class="block text-slate-500 mb-0.5">Số thẻ giấy cấp *</label><input type="text" value="THE-2026-0895" class="w-full border p-2 rounded-lg font-mono font-bold text-blue-700"></div>
+                <div><label class="block text-slate-500 mb-0.5">Hình thức thu</label><select class="w-full border p-2 rounded-lg font-bold"><option>Tiền mặt</option><option>Chuyển khoản (VietQR)</option><option>Thẻ POS</option></select></div>
+              </div>
+              <button onclick="alert('Đã tạo đơn thành công trên MISA eShop! Mã đơn: DH-20261104-099')" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition">
+                Tạo đơn eShop & Xuất biên nhận (1.200.000 đ)
+              </button>
+            </div>
+
+            <!-- Xem trước mẫu in biên nhận -->
+            <div class="bg-white rounded-xl shadow-xs border p-5 space-y-3 font-mono text-xs">
+              <div class="text-center border-b pb-3 border-dashed border-slate-300">
+                <div class="font-bold text-sm text-slate-900">CUNG VĂN HÓA LAO ĐỘNG TP.HCM</div>
+                <div class="text-[10px] text-slate-500">55B Nguyễn Thị Minh Khai, Q.1</div>
+                <div class="font-bold text-xs mt-2 text-blue-700">BIÊN NHẬN THU HỌC PHÍ</div>
+                <div class="text-[10px] text-slate-400">Mã đơn: DH-20261104-001</div>
+              </div>
+              <div class="space-y-1 pt-1">
+                <div class="flex justify-between"><span>Học viên:</span><strong class="text-slate-900">Trần Minh Hoàng</strong></div>
+                <div class="flex justify-between"><span>Môn học:</span><span>Khiêu vũ giao tiếp CB</span></div>
+                <div class="flex justify-between"><span>Số thẻ cấp:</span><strong class="text-amber-700">THE-2026-0895</strong></div>
+                <div class="flex justify-between border-t pt-1 border-dashed"><span class="font-bold">TỔNG TIỀN:</span><strong class="text-base text-rose-600">1.200.000 đ</strong></div>
+              </div>
+              <button onclick="alert('Lệnh in bill 80mm đã gửi máy in!')" class="w-full py-2 bg-slate-900 text-white rounded-lg font-bold text-xs mt-2">
+                🖨️ In biên nhận (Khổ 80mm)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH05() {
+      return `
+        <div class="max-w-2xl mx-auto space-y-6">
+          <div class="text-center space-y-2 pb-4 border-b">
+            <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-05 • Cổng Đăng Ký Trực Tuyến</span>
+            <h1 class="text-2xl font-black text-slate-900">Đăng Ký Khóa Học CVHLĐ (Không cần Login)</h1>
+            <p class="text-xs text-slate-500">Chọn lớp, điền thông tin cá nhân và quét mã VietQR tự động</p>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-xs border p-6 space-y-4 text-xs">
+            <h3 class="font-bold text-slate-900 text-sm">1. Chọn lớp học</h3>
+            <div class="p-3 bg-blue-50/50 border border-blue-200 rounded-xl flex justify-between items-center">
+              <div>
+                <strong class="text-slate-900">Khiêu vũ giao tiếp Căn bản K11</strong>
+                <p class="text-slate-500">Thứ 2-4-6 (18:00 - 19:30) • GV: Nguyễn Hải Đăng</p>
+              </div>
+              <span class="font-mono font-bold text-rose-600 text-sm">1.200.000 đ</span>
+            </div>
+
+            <h3 class="font-bold text-slate-900 text-sm pt-2">2. Thông tin học viên</h3>
+            <div class="space-y-2">
+              <input type="text" placeholder="Họ và tên học viên *" value="Lê Phương Thảo" class="w-full border p-2.5 rounded-lg">
+              <input type="tel" placeholder="Số điện thoại nhận SMS *" value="0909123889" class="w-full border p-2.5 rounded-lg">
+              <label class="flex items-start space-x-2 pt-1 text-slate-600">
+                <input type="checkbox" checked class="mt-0.5">
+                <span>Tôi đồng ý để CVHLĐ xử lý dữ liệu cá nhân phục vụ quản lý học vụ theo Nghị định 13/2023/NĐ-CP.</span>
+              </label>
+            </div>
+
+            <!-- Khung VietQR giữ chỗ 15 phút -->
+            <div class="p-4 bg-slate-50 border rounded-xl text-center space-y-2">
+              <span class="badge-yellow px-2.5 py-0.5 rounded-full font-bold text-[11px]">⏱️ Thời gian giữ chỗ còn lại: 14:45</span>
+              <div class="w-36 h-36 bg-white border mx-auto flex items-center justify-center font-bold text-slate-400 rounded-lg">
+                [ QR VietQR Code ]
+              </div>
+              <div class="text-slate-700 font-bold">Nội dung CK: <code class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded">DH-ONL-98 0909123889</code></div>
+              <button onclick="alert('Giả lập: Đã thanh toán thành công qua Webhook ngân hàng!')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition">
+                Giả lập: Thanh toán thành công
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH06() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-06</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Quản lý cấp phát lô thẻ giấy</h1>
+              <p class="text-xs text-slate-500">Tổ trưởng Tổ Tài vụ giao dải số thẻ, hủy thẻ hư hỏng có lưu lý do</p>
+            </div>
+            <button onclick="alert('Mở form giao lô thẻ mới')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Giao lô thẻ</button>
+          </div>
+
+          <div class="grid grid-cols-4 gap-3 text-xs">
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Tổng thẻ đã giao</span><div class="text-xl font-bold text-slate-900 mt-1">1.300</div></div>
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Đã phát hành</span><div class="text-xl font-bold text-emerald-600 mt-1">1.020</div></div>
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Còn tồn két</span><div class="text-xl font-bold text-blue-600 mt-1">273</div></div>
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Hủy hỏng</span><div class="text-xl font-bold text-rose-600 mt-1">7</div></div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã lô</th><th class="p-3">Nhân sự nhận</th><th class="p-3">Dải số serial</th><th class="p-3 text-center">Đã phát</th><th class="p-3 text-center">Còn lại</th><th class="p-3">Trạng thái</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">LOT-T11-01</td><td class="p-3 font-medium">Nguyễn Thị Thùy Dung (Quầy TS)</td><td class="p-3 font-mono">10001 → 10500</td><td class="p-3 text-center font-bold text-emerald-600">342</td><td class="p-3 text-center font-bold text-blue-600">155</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded">Đang phát hành</span></td><td class="p-3 text-right"><button onclick="openCancelModal('Hủy thẻ hư hỏng', 'Lô LOT-T11-01', (r) => alert('Đã hủy thẻ: ' + r))" class="text-rose-600 hover:underline">Báo hủy thẻ</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH07() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-07</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Chuyển lớp & Bảo lưu học phí</h1>
+              <p class="text-xs text-slate-500">Tạo yêu cầu chuyển lớp hoặc bảo lưu; người duyệt đồng ý; cập nhật ghi danh</p>
+            </div>
+            <button onclick="alert('Mở form lập yêu cầu')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Lập yêu cầu</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã phiếu</th><th class="p-3">Loại</th><th class="p-3">Học viên</th><th class="p-3">Lớp hiện tại</th><th class="p-3">Lớp chuyển tới / Hạn</th><th class="p-3">Trạng thái</th><th class="p-3 text-right">Phê duyệt</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">YCCL-01</td><td class="p-3"><span class="badge-blue px-2 py-0.5 rounded">Chuyển lớp</span></td><td class="p-3 font-bold">Phạm Minh Quân</td><td class="p-3">TS-KV01 (T2-4-6)</td><td class="p-3 font-medium text-slate-800">TS-KV02 (T3-5-7)</td><td class="p-3"><span class="badge-yellow px-2 py-0.5 rounded">Chờ duyệt</span></td><td class="p-3 text-right space-x-1"><button onclick="alert('Đã duyệt yêu cầu chuyển lớp!')" class="px-2 py-1 bg-emerald-600 text-white rounded font-bold">Duyệt</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH08() {
+      return `
+        <div class="max-w-2xl mx-auto space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-08</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold ml-1">📱 Tối ưu Mobile</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Điểm danh lớp học & Ghi người lạ</h1>
+              <p class="text-xs text-slate-500">Giáo viên điểm danh theo buổi, báo dạy thay, ghi nhận học viên chưa có thẻ</p>
+            </div>
+            <button onclick="alert('Đã lưu dữ liệu điểm danh buổi học!')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">Lưu điểm danh</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border p-4 space-y-3 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+              <strong class="text-slate-800">Lớp: TS-KV01 - Buổi 8 (04/11/2026)</strong>
+              <button onclick="alert('Mở form báo giáo viên dạy thay')" class="text-blue-600 underline">Báo dạy thay / Báo nghỉ</button>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg">
+                <div><strong class="text-slate-900 block">Trần Minh Hoàng</strong><span class="text-slate-400">Thẻ: THE-2026-0891</span></div>
+                <button onclick="this.classList.toggle('bg-emerald-600'); this.classList.toggle('text-white');" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white">Có mặt</button>
+              </div>
+              <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg">
+                <div><strong class="text-slate-900 block">Lê Hoàng Long</strong><span class="text-slate-400">Thẻ: THE-2026-0893</span></div>
+                <button onclick="this.classList.toggle('bg-emerald-600'); this.classList.toggle('text-white');" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-600">Vắng mặt</button>
+              </div>
+            </div>
+
+            <!-- Ghi nhận người lạ -->
+            <div class="pt-3 border-t">
+              <label class="block text-slate-700 font-bold mb-1">Ghi nhận người lạ / Học thử:</label>
+              <div class="flex gap-2">
+                <input type="text" placeholder="Ghi chú người lạ..." class="flex-1 border p-2 rounded-lg">
+                <button onclick="alert('Đã ghi nhận người lạ chuyển quầy đối chiếu!')" class="px-3 py-2 bg-rose-600 text-white rounded-lg font-bold">Thêm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH09() {
+      return `
+        <div class="max-w-2xl mx-auto space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-09</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold ml-1">📱 Tối ưu Mobile</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Kết ca & Bàn giao nộp quỹ</h1>
+              <p class="text-xs text-slate-500">Tổng thu theo phương thức, kiểm đếm tiền mặt, giải trình chênh lệch, thủ quỹ xác nhận</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Tiền mặt hệ thống</span><div class="text-lg font-bold text-slate-900 mt-1">3.600.000 đ</div></div>
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Chuyển khoản VietQR</span><div class="text-lg font-bold text-blue-600 mt-1">4.200.000 đ</div></div>
+            <div class="p-3 bg-white rounded-xl border"><span class="text-slate-500">Quẹt thẻ POS</span><div class="text-lg font-bold text-purple-600 mt-1">1.500.000 đ</div></div>
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200"><span class="text-emerald-800 font-bold">TỔNG THU CA</span><div class="text-lg font-black text-emerald-700 mt-1">9.300.000 đ</div></div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border p-5 space-y-4 text-xs">
+            <h3 class="font-bold text-slate-900 text-sm">Kiểm đếm tiền mặt thực tế tại két</h3>
+            <div>
+              <label class="block text-slate-500 mb-1">Số tiền mặt đếm được (VNĐ) *</label>
+              <input type="number" value="3600000" id="cashCountInput" class="w-full border p-2.5 rounded-xl font-mono font-bold text-lg text-slate-900">
+            </div>
+            <div class="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg font-bold">
+              Chênh lệch: 0 đ (Khớp hoàn toàn số liệu hệ thống)
+            </div>
+            <div>
+              <label class="block text-slate-500 mb-1">Ô giải trình chênh lệch (nếu có lệch tiền):</label>
+              <textarea rows="2" placeholder="Giải trình chi tiết nếu thừa/thiếu tiền..." class="w-full border p-2 rounded-lg"></textarea>
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button onclick="alert('Đã lập Phiếu nộp quỹ ca PNQ-0411-01 chuyển Thủ quỹ!')" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl text-xs">Lập phiếu nộp quỹ ca</button>
+              <button onclick="alert('Thủ quỹ đã ký xác nhận đã nhận đủ tiền nộp quỹ!')" class="flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs">Thủ quỹ xác nhận nộp quỹ</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH10() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-10</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Nhập sao kê ngân hàng & Trích mã đơn</h1>
+              <p class="text-xs text-slate-500">Tải file sao kê, kiểm tra cấu trúc, báo dòng trùng, trích mã đơn theo nội dung</p>
+            </div>
+            <button onclick="alert('Đã ghi nhận 3 giao dịch hợp lệ vào hệ thống đối soát (bỏ qua 1 dòng trùng)!')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Ghi nhận vào hệ thống</button>
+          </div>
+
+          <div class="p-6 bg-white border-2 border-dashed rounded-xl text-center text-xs space-y-2">
+            <div class="font-bold text-slate-800 text-sm">📁 Kéo thả file sao kê Excel/CSV (VCB, BIDV...) vào đây</div>
+            <div class="text-slate-400">Đã nạp file: VCB_SaoKe_20261104.xlsx (4 dòng giao dịch)</div>
+          </div>
+
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 font-medium">
+            ⚠️ Phát hiện 1 dòng trùng lặp mã GD VCB8892183 (sẽ tự động bỏ qua khi ghi nhận).
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Thời gian</th><th class="p-3">Mã GD</th><th class="p-3 text-right">Số tiền</th><th class="p-3">Nội dung CK</th><th class="p-3">Mã đơn trích xuất</th><th class="p-3 text-center">Kiểm tra</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 text-slate-500">04/11/2026 09:30</td><td class="p-3 font-mono font-bold">VCB8892183</td><td class="p-3 text-right font-mono font-bold">1.200.000 đ</td><td class="p-3">DH-20261104-002 Nguyen Thi Hong Nhung</td><td class="p-3 font-mono font-bold text-blue-700">DH-20261104-002</td><td class="p-3 text-center"><span class="badge-green px-2 py-0.5 rounded">Hợp lệ</span></td></tr>
+                <tr class="bg-rose-50/50"><td class="p-3 text-slate-500">04/11/2026 11:20</td><td class="p-3 font-mono font-bold">VCB8892183</td><td class="p-3 text-right font-mono font-bold">1.200.000 đ</td><td class="p-3">DH-20261104-002 Nguyen Thi Hong Nhung</td><td class="p-3 font-mono font-bold text-blue-700">DH-20261104-002</td><td class="p-3 text-center"><span class="badge-red px-2 py-0.5 rounded font-bold">Trùng lặp</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH11() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-11</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Đối soát 3 bên: Đơn hàng – Hóa đơn – Tiền ngân hàng</h1>
+              <p class="text-xs text-slate-500">Lọc khớp và ngoại lệ; ô giải trình; công cụ ghép tay có ghi lý do</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã đơn</th><th class="p-3 text-right">Tiền đơn</th><th class="p-3">Số HĐ điện tử</th><th class="p-3 text-right">Tiền HĐ</th><th class="p-3">Tiền Bank</th><th class="p-3">Trạng thái đối soát</th><th class="p-3">Giải trình</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-700">DH-20261104-001</td><td class="p-3 text-right font-mono font-bold">1.200.000 đ</td><td class="p-3 font-mono">HD-04421</td><td class="p-3 text-right font-mono">1.200.000 đ</td><td class="p-3 font-mono text-emerald-700 font-bold">1.200.000 đ</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded font-bold">Khớp</span></td><td class="p-3 text-slate-400">-</td><td class="p-3 text-right"><span class="text-slate-400">Đã khớp</span></td></tr>
+                <tr><td class="p-3 font-mono font-bold text-blue-700">DH-20261104-005</td><td class="p-3 text-right font-mono font-bold">1.800.000 đ</td><td class="p-3 text-rose-500 font-bold">Chưa xuất HĐ</td><td class="p-3 text-right font-mono text-slate-400">0 đ</td><td class="p-3 font-mono text-emerald-700 font-bold">1.800.000 đ</td><td class="p-3"><span class="badge-orange px-2 py-0.5 rounded font-bold">Thiếu hóa đơn</span></td><td class="p-3 text-slate-600">Đang yêu cầu meInvoice cấp phát lại</td><td class="p-3 text-right"><button onclick="alert('Mở popup ghép tay thủ công kèm nhập lý do')" class="text-blue-600 font-bold hover:underline">Ghép tay</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH12() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-12</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Chốt ca & Khóa ngày cơ sở (21:00)</h1>
+              <p class="text-xs text-slate-500">Sau khi khóa hiển thị trạng thái đã khóa, không cho phép chỉnh sửa</p>
+            </div>
+            <button onclick="alert('Đã khóa ngày cơ sở lúc 21:00! Mọi hóa đơn và đơn ghi danh trong ngày đã đóng.')" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">🔒 Xác nhận & Khóa ngày (21:00)</button>
+          </div>
+
+          <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between text-xs text-rose-900">
+            <div>
+              <strong class="text-sm">Quy chuẩn CVHLĐ: Khóa doanh thu ngày lúc 21:00</strong>
+              <p class="mt-0.5">Dữ liệu ngày 04/11/2026 của Trụ sở: 12 Đơn ghi danh, Tổng thực thu: 21.800.000 đ.</p>
+            </div>
+            <button onclick="alert('Đang in Bảng kê ngày PDF...')" class="px-3 py-1.5 bg-white border rounded font-bold text-slate-700">In Bảng kê ngày</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH13() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-13</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Hồ sơ giáo viên & Hợp đồng giảng dạy</h1>
+              <p class="text-xs text-slate-500">Thông tin giáo viên, mã số thuế, tài khoản ngân hàng, hợp đồng và tỷ lệ % thù lao</p>
+            </div>
+            <button onclick="alert('Mở form thêm giáo viên')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Thêm giáo viên</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã GV</th><th class="p-3">Họ tên giáo viên</th><th class="p-3">Mã số thuế / CCCD</th><th class="p-3">TK Ngân hàng</th><th class="p-3">Hợp đồng giảng dạy</th><th class="p-3 text-center">Tỷ lệ %</th><th class="p-3">Trạng thái</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">GV-01</td><td class="p-3 font-bold text-slate-900">Nguyễn Hải Đăng<br><span class="text-slate-400">Khiêu vũ giao tiếp</span></td><td class="p-3">MST: 8092183921<br>CCCD: 079085002134</td><td class="p-3 font-mono">0071001289382<br><span class="text-slate-400">VCB Kỳ Đồng</span></td><td class="p-3 font-mono font-bold text-blue-700">HDGD-2026/012</td><td class="p-3 text-center font-bold text-emerald-700 bg-emerald-50 rounded">65%</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded">Đang giảng dạy</span></td></tr>
+                <tr><td class="p-3 font-mono font-bold text-blue-600">GV-02</td><td class="p-3 font-bold text-slate-900">Trần Thị Mai Loan<br><span class="text-slate-400">Khiêu vũ Latin</span></td><td class="p-3">MST: 8102938192<br>CCCD: 079188004512</td><td class="p-3 font-mono">13010002938123<br><span class="text-slate-400">BIDV NKKN</span></td><td class="p-3 font-mono font-bold text-blue-700">HDGD-2026/015</td><td class="p-3 text-center font-bold text-emerald-700 bg-emerald-50 rounded">70%</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded">Đang giảng dạy</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH14() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-14</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold ml-1">📱 Tối ưu Mobile</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Bảng kê thù lao giáo viên cuối khóa</h1>
+              <p class="text-xs text-slate-500">Doanh thu, tỷ lệ %, thù lao, thuế TNCN 10%, thực nhận; GV xác nhận, kế toán duyệt, chuyển đề xuất chi</p>
+            </div>
+            <button onclick="alert('Đang xuất file lệnh chi ngân hàng...')" class="px-3 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold">Xuất file chi ngân hàng</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã bảng kê</th><th class="p-3">Giáo viên</th><th class="p-3">Lớp học</th><th class="p-3 text-right">Doanh thu</th><th class="p-3 text-center">%</th><th class="p-3 text-right">Thù lao</th><th class="p-3 text-right">Thuế TNCN (10%)</th><th class="p-3 text-right">Thực nhận</th><th class="p-3">Trạng thái</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">BKTL-T10-001</td><td class="p-3 font-bold">Nguyễn Hải Đăng</td><td class="p-3">Khiêu vũ giao tiếp K10</td><td class="p-3 text-right font-mono">38.400.000 đ</td><td class="p-3 text-center font-bold">65%</td><td class="p-3 text-right font-mono">24.960.000 đ</td><td class="p-3 text-right font-mono text-rose-600">-2.496.000 đ</td><td class="p-3 text-right font-mono font-bold text-emerald-700 text-sm">22.464.000 đ</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded font-bold">Kế toán duyệt</span></td><td class="p-3 text-right"><button onclick="alert('Đã tự động chuyển thành Đề xuất chi Luồng A!')" class="px-2.5 py-1 bg-emerald-600 text-white rounded font-bold">Tạo đề xuất chi</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH15() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-15</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Đề xuất chi (Luồng A/B)</h1>
+              <p class="text-xs text-slate-500">Toàn bộ CBCC lập phiếu: Luồng A thường quy trong dự toán, Luồng B ngoài dự toán / dự án lớn</p>
+            </div>
+            <button onclick="alert('Mở modal lập đề xuất chi mới')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Lập phiếu đề xuất</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl"><strong>Luồng A (Trong dự toán thường quy):</strong> Áp dụng cho chi hoạt động nghiệp vụ, chi thù lao giảng dạy định kỳ.</div>
+            <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl"><strong>Luồng B (Ngoài dự toán / Lớn):</strong> Áp dụng cho mua sắm tài sản, cải tạo cơ sở vật chất lớn họp duyệt.</div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã phiếu</th><th class="p-3">Luồng</th><th class="p-3">Người đề xuất / Phòng</th><th class="p-3">Nội dung đề xuất</th><th class="p-3 text-right">Số tiền</th><th class="p-3">Hồ sơ</th><th class="p-3">Trạng thái</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">PDC-2026-11-001</td><td class="p-3 font-bold text-blue-700">Luồng A</td><td class="p-3 font-semibold">Nguyễn Văn Minh (Phòng VH)</td><td class="p-3">Chi thù lao giáo viên khiêu vũ tháng 10</td><td class="p-3 text-right font-mono font-bold text-slate-900">50.814.000 đ</td><td class="p-3 text-slate-500">📎 3 Tệp</td><td class="p-3"><span class="badge-yellow px-2 py-0.5 rounded font-bold">Chờ duyệt</span></td></tr>
+                <tr><td class="p-3 font-mono font-bold text-blue-600">PDC-2026-11-003</td><td class="p-3 font-bold text-purple-700">Luồng B</td><td class="p-3 font-semibold">Lê Hoàng Yến (TC-HC-QT)</td><td class="p-3">Nâng cấp âm thanh ánh sáng sân khấu CS2</td><td class="p-3 text-right font-mono font-bold text-slate-900">145.000.000 đ</td><td class="p-3 text-slate-500">📎 5 Tệp</td><td class="p-3"><span class="badge-yellow px-2 py-0.5 rounded font-bold">Chờ kế toán</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH16() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-16</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Kiểm soát chi hồ sơ (Kế toán thanh toán)</h1>
+              <p class="text-xs text-slate-500">Checklist hồ sơ; trả lại / tạm dừng kèm căn cứ; cảnh báo chia tách khoản chi; kiểm tra số dư dự toán</p>
+            </div>
+          </div>
+
+          <div class="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 font-medium">
+            ⚠️ <strong>Cảnh báo chia tách gói chi:</strong> Phát hiện 2 phiếu chi trong vòng 7 ngày cho cùng nhà cung cấp tổng trị giá 95 triệu (gần hạn mức chỉ định thầu 100 triệu).
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border p-5 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+              <div><strong class="text-sm text-slate-900">Phiếu: PDC-2026-11-003 • Nâng cấp âm thanh CS2</strong></div>
+              <span class="font-mono font-bold text-blue-700 text-base">145.000.000 đ</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg flex justify-between">
+              <span>Mục chi: Mua sắm trang thiết bị</span>
+              <strong>Số dư dự toán còn: 385.000.000 đ (Đủ bảo đảm)</strong>
+            </div>
+            <div class="space-y-2 font-medium">
+              <label class="flex items-center space-x-2"><input type="checkbox" checked class="text-blue-600"> <span>Hóa đơn điện tử hợp lệ (Đã tra cứu Tổng cục Thuế)</span></label>
+              <label class="flex items-center space-x-2"><input type="checkbox" checked class="text-blue-600"> <span>Hợp đồng kinh tế và cam kết bảo hành kèm theo</span></label>
+              <label class="flex items-center space-x-2"><input type="checkbox" checked class="text-blue-600"> <span>Biên bản nghiệm thu hoàn thành có đầy đủ chữ ký</span></label>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+              <button onclick="alert('Đã trả lại hồ sơ yêu cầu bổ sung chứng từ!')" class="px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded font-bold">Trả lại hồ sơ</button>
+              <button onclick="alert('Đã chuyển phiếu chi tới Hộp duyệt Ban Giám đốc!')" class="px-4 py-1.5 bg-blue-600 text-white rounded font-bold">Chuyển Ban Giám đốc duyệt</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH17() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-17</span>
+              <span class="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded ml-1">Yêu cầu 2FA</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Hộp duyệt Ban Giám đốc</h1>
+              <p class="text-xs text-slate-500">Xem hồ sơ đính kèm; 3 nút quyết định: Đồng ý, Trả lại, Từ chối kèm ô ý kiến</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border p-6 space-y-4 text-xs">
+            <div class="border-b pb-3">
+              <div class="font-mono text-blue-600 font-bold">PDC-2026-11-001 • Luồng A</div>
+              <h3 class="text-base font-bold text-slate-900 mt-1">Chi thù lao giảng dạy Khiêu vũ & Aerobic đợt cuối tháng 10</h3>
+              <p class="text-slate-500">Phòng Văn hóa đề xuất • Số tiền: <strong class="text-rose-600 font-mono text-sm">50.814.000 đ</strong></p>
+            </div>
+            <div class="p-3 bg-emerald-50 rounded-lg text-emerald-900 font-medium">
+              ✓ Kế toán thanh toán đã kiểm soát đầy đủ bảng kê cuối khóa có chữ ký GV và khấu trừ thuế TNCN 10%.
+            </div>
+            <div>
+              <label class="block text-slate-700 font-bold mb-1">Ý kiến chỉ đạo của Ban Giám đốc:</label>
+              <textarea rows="2" placeholder="Ghi ý kiến chỉ đạo nếu có..." class="w-full border p-2 rounded-lg"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+              <button onclick="alert('Đã từ chối chi!')" class="px-4 py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-bold">Từ chối chi</button>
+              <button onclick="alert('Đã trả lại hồ sơ yêu cầu giải trình thêm!')" class="px-4 py-2 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg font-bold">Trả lại</button>
+              <button onclick="alert('Ban Giám đốc đã ĐỒNG Ý phê duyệt phiếu chi!')" class="px-5 py-2 bg-emerald-600 text-white rounded-lg font-bold shadow-sm">Đồng ý phê duyệt</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH18() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-18</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Hợp đồng, dự toán & Công nợ đến hạn</h1>
+              <p class="text-xs text-slate-500">Sổ hợp đồng và các đợt thanh toán; dự toán năm theo mục chi; danh sách công nợ</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <div class="p-3 bg-slate-50 border-b font-bold text-xs text-slate-700">Sổ theo dõi hợp đồng kinh tế và giải ngân</div>
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Số HĐ</th><th class="p-3">Tên gói / Đối tác</th><th class="p-3 text-right">Tổng giá trị</th><th class="p-3 text-right">Đã thanh toán</th><th class="p-3 text-right">Còn lại</th><th class="p-3">Đợt</th><th class="p-3">Hạn thanh toán</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">HDBT-2026/09</td><td class="p-3 font-medium">Bảo trì máy lạnh Hội trường<br><span class="text-slate-400">Cơ điện lạnh Đông Nam</span></td><td class="p-3 text-right font-mono font-bold">55.000.000 đ</td><td class="p-3 text-right font-mono text-emerald-600 font-bold">36.500.000 đ</td><td class="p-3 text-right font-mono text-rose-600 font-bold">18.500.000 đ</td><td class="p-3"><span class="badge-blue px-2 py-0.5 rounded">Đợt 2/2</span></td><td class="p-3 text-slate-600 font-bold">15/11/2026 (Còn 11 ngày)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH19() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-19</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Chứng từ kế toán xuất MISA</h1>
+              <p class="text-xs text-slate-500">Xuất file XML/Excel chuẩn MISA; đánh dấu đã chuyển; hủy chuyển cần duyệt</p>
+            </div>
+            <button onclick="alert('Đang kết xuất file XML/Excel chuẩn MISA Kế toán...')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">📥 Xuất file MISA (XML / Excel)</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Mã CT HTQT</th><th class="p-3">Ngày lập</th><th class="p-3">Nghiệp vụ</th><th class="p-3">Diễn giải</th><th class="p-3 text-right">Số tiền</th><th class="p-3">Trạng thái MISA</th><th class="p-3 text-right">Thao tác</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono font-bold text-blue-600">CT-20261104-01</td><td class="p-3 text-slate-500">04/11/2026</td><td class="p-3 font-medium">Phiếu thu bán hàng</td><td class="p-3">Tổng hợp thu học phí quầy ca sáng 04/11</td><td class="p-3 text-right font-mono font-bold">21.800.000 đ</td><td class="p-3"><span class="badge-yellow px-2 py-0.5 rounded font-bold">Chờ chuyển</span></td><td class="p-3 text-right"><button onclick="alert('Đã cập nhật trạng thái: Đã chuyển sang MISA!')" class="px-2 py-1 bg-emerald-600 text-white rounded font-bold">Đánh dấu đã chuyển</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH20() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-20</span>
+              <span class="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded ml-1">Yêu cầu 2FA</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Ánh xạ tài khoản kế toán & Tham số hệ thống</h1>
+              <p class="text-xs text-slate-500">Cấu hình TK kế toán; tỷ lệ thuế; giờ chốt sổ 21:00; bảng thẩm quyền duyệt chi</p>
+            </div>
+            <button onclick="alert('Đã lưu thiết lập tham số hệ thống!')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">Lưu thiết lập</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="p-4 bg-white rounded-xl border space-y-2">
+              <strong class="text-slate-900 block text-sm">Thời gian khóa sổ & Thuế</strong>
+              <div><label class="text-slate-500 block">Giờ tự động chốt sổ hằng ngày:</label><input type="time" value="21:00" class="border p-2 rounded-lg font-bold"></div>
+              <div><label class="text-slate-500 block">Tỷ lệ thuế TNCN vãng lai giáo viên (%):</label><input type="number" value="10" class="border p-2 rounded-lg font-bold w-20">%</div>
+            </div>
+
+            <div class="p-4 bg-white rounded-xl border space-y-2">
+              <strong class="text-slate-900 block text-sm">Hạn mức thẩm quyền duyệt chi</strong>
+              <div class="space-y-1">
+                <div class="flex justify-between p-2 bg-slate-50 rounded"><span>Trưởng phòng / Cơ sở:</span><strong class="text-blue-700">Tối đa 20.000.000 đ</strong></div>
+                <div class="flex justify-between p-2 bg-slate-50 rounded"><span>Phó Giám đốc phụ trách:</span><strong class="text-blue-700">Tối đa 100.000.000 đ</strong></div>
+                <div class="flex justify-between p-2 bg-slate-50 rounded"><span>Giám đốc Cung Văn hóa:</span><strong class="text-emerald-700">Không giới hạn</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH21() {
+      return `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-21</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Dashboard Tổng quan Lãnh đạo (8 Chỉ số BC-01 đến BC-08)</h1>
+              <p class="text-xs text-slate-500">Trung tâm dữ liệu điều hành toàn diện của Ban Giám đốc CVHLĐ</p>
+            </div>
+            <div class="flex space-x-2 text-xs">
+              <select class="border p-1.5 rounded-lg font-semibold bg-white"><option>Hôm nay (04/11/2026)</option><option>Tháng 11/2026</option><option>Quý 4/2026</option></select>
+            </div>
+          </div>
+
+          <!-- 8 Cards BC-01 to BC-08 -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-01</span><span class="text-emerald-600 font-bold">+12.5%</span></div><div class="text-slate-500 mt-1">Tổng doanh thu hệ thống</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">1.450.000.000 đ</div><div class="text-[10px] text-slate-400">7 Cơ sở hoạt động</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-02</span><span class="text-emerald-600 font-bold">+8.2%</span></div><div class="text-slate-500 mt-1">Doanh thu tại quầy</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">890.000.000 đ</div><div class="text-[10px] text-slate-400">61.4% tỷ trọng</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-03</span><span class="text-emerald-600 font-bold">+24.6%</span></div><div class="text-slate-500 mt-1">Doanh thu VietQR online</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">560.000.000 đ</div><div class="text-[10px] text-slate-400">38.6% tỷ trọng</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-04</span><span class="text-emerald-600 font-bold">+15.1%</span></div><div class="text-slate-500 mt-1">Tổng lượt ghi danh</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">1.240 Học viên</div><div class="text-[10px] text-slate-400">84 Lớp mở bán</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-05</span><span class="text-emerald-600 font-bold">+10.0%</span></div><div class="text-slate-500 mt-1">Thù lao giáo viên chi trả</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">820.500.000 đ</div><div class="text-[10px] text-slate-400">TB 63.5% doanh thu</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-06</span><span class="text-slate-500 font-bold">-4.2%</span></div><div class="text-slate-500 mt-1">Chi phí PĐC đã duyệt</div><div class="text-base font-bold text-slate-900 font-mono mt-0.5">245.000.000 đ</div><div class="text-[10px] text-slate-400">Trong dự toán</div></div>
+            <div class="p-3 bg-white rounded-xl border border-rose-300 shadow-xs"><div class="flex justify-between"><span class="font-bold text-rose-600 bg-rose-50 px-1 rounded">BC-07</span><span class="text-rose-600 font-bold">Cần xử lý</span></div><div class="text-slate-500 mt-1">Ngoại lệ đối soát tồn</div><div class="text-base font-bold text-rose-600 font-mono mt-0.5">3 Đơn hàng</div><div class="text-[10px] text-rose-600">Chưa giải trình</div></div>
+            <div class="p-3 bg-white rounded-xl border shadow-xs"><div class="flex justify-between"><span class="font-bold text-blue-600 bg-blue-50 px-1 rounded">BC-08</span><span class="text-emerald-600 font-bold">+3.5%</span></div><div class="text-slate-500 mt-1">Tỷ lệ lấp đầy sĩ số</div><div class="text-base font-bold text-emerald-700 font-mono mt-0.5">88.4%</div><div class="text-[10px] text-emerald-600">Đạt chỉ tiêu Q4</div></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-5 rounded-xl border space-y-3 text-xs">
+              <strong class="text-slate-800 text-sm block">Doanh thu phân bổ theo 7 Cơ sở</strong>
+              <div class="space-y-2">
+                <div><div class="flex justify-between font-semibold"><span>Trụ sở chính</span><span>620.000.000 đ (42.8%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-blue-600 h-2 rounded" style="width:42.8%"></div></div></div>
+                <div><div class="flex justify-between font-semibold"><span>Cơ sở 1 (CLB Thể thao & Khiêu vũ)</span><span>310.000.000 đ (21.4%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-indigo-600 h-2 rounded" style="width:21.4%"></div></div></div>
+                <div><div class="flex justify-between font-semibold"><span>Cơ sở 2 (Khu biểu diễn nghệ thuật)</span><span>195.000.000 đ (13.4%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-emerald-600 h-2 rounded" style="width:13.4%"></div></div></div>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border space-y-3 text-xs">
+              <strong class="text-slate-800 text-sm block">Cơ cấu Doanh thu theo Môn học</strong>
+              <div class="space-y-2">
+                <div><div class="flex justify-between font-semibold"><span>Khiêu vũ cổ điển & Hiện đại</span><span>580.000.000 đ (40%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-emerald-500 h-2 rounded" style="width:40%"></div></div></div>
+                <div><div class="flex justify-between font-semibold"><span>Thể thao (Bơi lội, Gym, Aerobic)</span><span>435.000.000 đ (30%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-blue-500 h-2 rounded" style="width:30%"></div></div></div>
+                <div><div class="flex justify-between font-semibold"><span>Âm nhạc, Hội họa & Kỹ năng</span><span>290.000.000 đ (20%)</span></div><div class="w-full bg-slate-100 h-2 rounded"><div class="bg-amber-500 h-2 rounded" style="width:20%"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH22() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-22</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Báo cáo & Thống kê tài chính</h1>
+              <p class="text-xs text-slate-500">Bảng kê ngày, báo cáo tuần, tháng; nút xuất Excel, PDF</p>
+            </div>
+            <div class="flex space-x-2">
+              <button onclick="alert('Đang xuất file Excel (.xlsx)...')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold">Xuất Excel</button>
+              <button onclick="alert('Đang xuất file PDF...')" class="px-3 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold">Xuất PDF</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Ngày</th><th class="p-3">Tên biểu mẫu</th><th class="p-3 text-center">Số đơn</th><th class="p-3 text-right">Tiền mặt</th><th class="p-3 text-right">Chuyển khoản</th><th class="p-3 text-right">Tổng thực thu</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-bold text-slate-900">04/11/2026</td><td class="p-3">Bảng kê thu tiền theo quầy & Online</td><td class="p-3 text-center font-bold text-blue-600">12</td><td class="p-3 text-right font-mono">8.600.000 đ</td><td class="p-3 text-right font-mono">13.200.000 đ</td><td class="p-3 text-right font-mono font-bold text-emerald-700 text-sm">21.800.000 đ</td></tr>
+                <tr><td class="p-3 font-bold text-slate-900">03/11/2026</td><td class="p-3">Bảng kê thu tiền theo quầy & Online</td><td class="p-3 text-center font-bold text-blue-600">18</td><td class="p-3 text-right font-mono">12.400.000 đ</td><td class="p-3 text-right font-mono">19.800.000 đ</td><td class="p-3 text-right font-mono font-bold text-emerald-700 text-sm">32.200.000 đ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenMH23() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">MH-23</span>
+              <span class="px-2 py-0.5 text-xs font-bold bg-amber-100 text-amber-800 rounded ml-1">Yêu cầu 2FA</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Người dùng & Nhật ký audit hệ thống</h1>
+              <p class="text-xs text-slate-500">Tài khoản, vai trò, cơ sở; nhật ký thao tác; nhật ký đồng bộ phần mềm ngoài</p>
+            </div>
+            <button onclick="alert('Mở form tạo tài khoản mới')" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">+ Tạo tài khoản</button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xs border overflow-hidden">
+            <div class="p-3 bg-slate-50 border-b font-bold text-xs text-slate-700">Nhật ký đồng bộ với phần mềm bên ngoài</div>
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 text-slate-600 uppercase border-b">
+                <tr><th class="p-3">Thời điểm</th><th class="p-3">Phần mềm</th><th class="p-3">Sự kiện</th><th class="p-3">Trạng thái</th><th class="p-3">Chi tiết kỹ thuật</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="p-3 font-mono text-slate-500">04/11/2026 14:41</td><td class="p-3 font-bold">MISA eShop</td><td class="p-3">Đẩy mặt hàng SKU: TS-KV01</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded">Thành công</span></td><td class="p-3 font-mono text-[11px]">HTTP 200 OK</td></tr>
+                <tr><td class="p-3 font-mono text-slate-500">04/11/2026 14:30</td><td class="p-3 font-bold">Hóa đơn meInvoice</td><td class="p-3">Lấy hóa đơn đã phát hành</td><td class="p-3"><span class="badge-green px-2 py-0.5 rounded">Thành công</span></td><td class="p-3 font-mono text-[11px]">Đã nhận 12 hóa đơn</td></tr>
+                <tr><td class="p-3 font-mono text-slate-500">04/11/2026 11:15</td><td class="p-3 font-bold">Hóa đơn meInvoice</td><td class="p-3">Cấp phát hóa đơn DH-005</td><td class="p-3"><span class="badge-red px-2 py-0.5 rounded font-bold">Cảnh báo/Lỗi</span></td><td class="p-3 font-mono text-[11px]">Timeout kết nối thuế</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenCBCC() {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">HỒ SƠ CBCC</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Chi tiết Hồ sơ Cán bộ Công chức (5 Tabs Chuẩn)</h1>
+              <p class="text-xs text-slate-500">Hồ sơ: Vũ Quốc Thái - Giám đốc Cung Văn hóa Lao động TP.HCM</p>
+            </div>
+            <button onclick="alert('Đang xuất file lý lịch 2C PDF có ký số...')" class="px-3 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold">Xuất file lý lịch PDF</button>
+          </div>
+
+          <!-- 5 Tabs ngang -->
+          <div class="flex border-b text-xs font-bold">
+            <button class="py-2.5 px-4 border-b-2 border-blue-600 text-blue-600">1. Thông tin hồ sơ (8 Mục)</button>
+            <button class="py-2.5 px-4 text-slate-500 hover:text-slate-800">2. Thông tin khác</button>
+            <button class="py-2.5 px-4 text-slate-500 hover:text-slate-800">3. Lịch sử chỉnh sửa</button>
+            <button class="py-2.5 px-4 text-slate-500 hover:text-slate-800">4. Tài liệu đính kèm (4)</button>
+            <button class="py-2.5 px-4 text-slate-500 hover:text-slate-800">5. Đã ký số (3)</button>
+          </div>
+
+          <!-- 8 Mục Accordion -->
+          <div class="space-y-2 text-xs">
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-blue-700 block text-sm">Mục 1: Sơ lược lý lịch</strong><p class="text-slate-600 mt-1">Họ tên: Vũ Quốc Thái • Sinh ngày: 15/08/1978 • Dân tộc: Kinh • CCCD: 079078001234</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-indigo-700 block text-sm">Mục 2: Quá trình công tác</strong><p class="text-slate-600 mt-1">2020 - Nay: Giám đốc CVHLĐ • 2012 - 2019: Phó Ban Tuyên giáo LĐLĐ TP.HCM</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-emerald-700 block text-sm">Mục 3: Quá trình đào tạo bồi dưỡng</strong><p class="text-slate-600 mt-1">Thạc sĩ Quản lý Văn hóa (ĐH Văn hóa) • Cao cấp Lý luận Chính trị</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-amber-700 block text-sm">Mục 4: Khen thưởng, kỷ luật</strong><p class="text-slate-600 mt-1">Bằng khen Thủ tướng Chính phủ (2023) • Kỷ luật: Không</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-slate-700 block text-sm">Mục 5: Đặc điểm lịch sử bản thân</strong><p class="text-slate-600 mt-1">Gia đình và bản thân gương mẫu chấp hành chính sách pháp luật</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-teal-700 block text-sm">Mục 6: Quá trình lương</strong><p class="text-slate-600 mt-1">Ngạch 01.002 (Chuyên viên chính) • Bậc 6 - Hệ số 5.76 • Phụ cấp chức vụ 0.8</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-blue-700 block text-sm">Mục 7: Hợp đồng lao động</strong><p class="text-slate-600 mt-1">Quyết định tuyển dụng công chức số QĐ-142/QĐ-LĐLĐ</p></div>
+            <div class="p-3 bg-white border rounded-xl shadow-xs"><strong class="text-emerald-700 block text-sm">Mục 8: Đánh giá xếp loại</strong><p class="text-slate-600 mt-1">Năm 2025: Hoàn thành xuất sắc nhiệm vụ (HTXSNV)</p></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getScreenKPI(sub) {
+      return `
+        <div class="space-y-6">
+          <div class="flex justify-between items-center pb-4 border-b">
+            <div>
+              <span class="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded">KPI - MỤC ${sub}</span>
+              <h1 class="text-xl font-bold text-slate-900 mt-1">Hệ thống Đánh giá KPI & Nhiệm vụ theo Quý</h1>
+              <p class="text-xs text-slate-500">Phân loại: Nhiệm vụ thường xuyên & Nhiệm vụ đột xuất (khẩn 03 ngày)</p>
+            </div>
+            <span class="badge-blue px-3 py-1 rounded-full font-bold text-xs">Quý 4/2026</span>
+          </div>
+
+          <div class="flex space-x-1.5 border-b pb-2 text-xs font-semibold overflow-x-auto">
+            <button onclick="selectScreen('KPI-01')" class="px-2.5 py-1 rounded ${sub === '7.1' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.1 Danh mục đơn vị</button>
+            <button onclick="selectScreen('KPI-02')" class="px-2.5 py-1 rounded ${sub === '7.2' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.2 Quản lý nhiệm vụ</button>
+            <button onclick="selectScreen('KPI-03')" class="px-2.5 py-1 rounded ${sub === '7.3' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.3 Nộp SP (5 Mức %)</button>
+            <button onclick="selectScreen('KPI-04')" class="px-2.5 py-1 rounded ${sub === '7.4' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.4 Bảng tổng hợp (30-70)</button>
+            <button onclick="selectScreen('KPI-05')" class="px-2.5 py-1 rounded ${sub === '7.5' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.5 Bình xét cơ sở</button>
+            <button onclick="selectScreen('KPI-06')" class="px-2.5 py-1 rounded ${sub === '7.6' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.6 Tham mưu TP</button>
+            <button onclick="selectScreen('KPI-07')" class="px-2.5 py-1 rounded ${sub === '7.7' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'}">7.7 Biểu quyết BGĐ</button>
+          </div>
+
+          ${sub === '7.3' ? `
+            <!-- 7.3 Đánh giá 5 Mức chuẩn -->
+            <div class="bg-white p-5 rounded-xl border space-y-4 text-xs">
+              <h3 class="font-bold text-slate-900 text-sm">Đánh giá sản phẩm công việc (Khối Văn phòng - 5 mức chuẩn đặc tả):</h3>
+              <div class="space-y-2">
+                <label class="p-3 border rounded-lg flex items-start space-x-2 bg-blue-50/70 border-blue-400 cursor-pointer">
+                  <input type="radio" name="lvl" checked class="mt-0.5">
+                  <strong>100% - Bảo đảm đúng chủ trương, yêu cầu, có tính khả thi, được chấp nhận ngay hoặc chỉ phải hoàn thiện về kỹ thuật, thể thức</strong>
+                </label>
+                <label class="p-3 border rounded-lg flex items-start space-x-2 hover:bg-slate-50 cursor-pointer">
+                  <input type="radio" name="lvl" class="mt-0.5">
+                  <span>75% - Cơ bản đáp ứng yêu cầu, phải hoàn thiện chỉnh sửa một số nội dung nhưng không ảnh hưởng cốt lõi</span>
+                </label>
+                <label class="p-3 border rounded-lg flex items-start space-x-2 hover:bg-slate-50 cursor-pointer">
+                  <input type="radio" name="lvl" class="mt-0.5">
+                  <span>50% - Chưa đáp ứng đầy đủ yêu cầu, ảnh hưởng chất lượng hiệu quả</span>
+                </label>
+                <label class="p-3 border rounded-lg flex items-start space-x-2 hover:bg-slate-50 cursor-pointer">
+                  <input type="radio" name="lvl" class="mt-0.5">
+                  <span>25% - Có sai sót nghiêm trọng về nội dung, phải làm lại</span>
+                </label>
+                <label class="p-3 border rounded-lg flex items-start space-x-2 hover:bg-slate-50 cursor-pointer">
+                  <input type="radio" name="lvl" class="mt-0.5">
+                  <span>0% - Không bảo đảm yêu cầu, sai chủ trương quan điểm chỉ đạo</span>
+                </label>
+              </div>
+              <button onclick="alert('Đã lưu đánh giá 100% cho sản phẩm!')" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg">Lưu đánh giá sản phẩm</button>
+            </div>
+          ` : `
+            <!-- Tổng hợp 7.4 quy chuẩn 30 - 70 -->
+            <div class="bg-white p-5 rounded-xl border space-y-4 text-xs">
+              <div class="flex justify-between items-center border-b pb-2">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm">Bảng tổng hợp đánh giá xếp loại cuối quý</h3>
+                  <p class="text-slate-500">Phần 1 Tiêu chí chung (30đ) + Phần 2 Kết quả SP (70đ)</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-slate-400">TỔNG ĐIỂM:</span>
+                  <div class="text-xl font-black text-blue-700">94 / 100 Điểm</div>
+                </div>
+              </div>
+              <div class="p-3 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-xl font-bold flex justify-between items-center text-sm">
+                <span>Đề xuất xếp loại quý:</span>
+                <span>Hoàn thành xuất sắc nhiệm vụ (HTXSNV ≥ 90đ)</span>
+              </div>
+              <div class="flex justify-end space-x-2 pt-2 border-t">
+                <button onclick="alert('Đã gửi bảng đánh giá lên Lãnh đạo bình xét!')" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg">Gửi cấp trên phê duyệt</button>
+              </div>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    // --- Init on Load ---
+    window.onload = function() {
+      renderSidebar();
+      renderCurrentScreen();
+    };
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,244 @@
+Context dựng UI nháp HTQT – Cung Văn hóa Lao động TP.HCM
+Nov 3, 2026 · @Dev1Ring
+1. Mục đích
+Tài liệu này là context để đưa cho công cụ AI dựng giao diện (UI) nháp cho toàn bộ hệ thống HTQT của Cung Văn hóa Lao động TP.HCM (gọi tắt CVHLĐ). Bản UI dùng để Ringnet trình bày với khách, giúp khách hình dung hệ thống và góp ý sớm.
+Phạm vi UI nháp:
+Chỉ là giao diện với dữ liệu mẫu, chưa có xử lý nghiệp vụ, chưa kết nối thật với MISA eShop, hóa đơn điện tử, ngân hàng, MISA kế toán.
+Bao gồm 23 màn hình HTQT theo tài liệu mô tả yêu cầu của CVHLĐ, cùng các màn hình Hồ sơ CBCC và KPI.
+Các nút bấm có thể chuyển trang hoặc đổi trạng thái giả lập để minh họa luồng thao tác.
+Chỉ dựng đúng các màn hình và chức năng liệt kê trong tài liệu này, không tự thêm màn hình hay chức năng khác.
+2. Tổng quan dự án
+HTQT (Hệ thống quản trị tổng thể) là phần mềm quản lý nội bộ của CVHLĐ, dùng cho trụ sở và 6 cơ sở trực thuộc (tổng 7 đơn vị). HTQT gồm các nhóm chức năng:
+Danh mục và bảng giá.
+Ghi danh và học vụ: khóa học, lớp, ghi danh tại quầy, đăng ký trực tuyến, lô thẻ giấy, chuyển lớp, bảo lưu, điểm danh.
+Đối soát doanh thu và chốt sổ: kết ca, nhập sao kê, đối soát đơn – hóa đơn – tiền, chốt sổ lúc 21h hằng ngày.
+Thù lao giáo viên: hồ sơ giáo viên, hợp đồng giảng dạy theo tỷ lệ %, bảng kê thù lao cuối khóa.
+Đề xuất chi, hợp đồng, dự toán: lập phiếu đề xuất chi (Luồng A/B), kiểm soát chi, hộp duyệt, sổ hợp đồng, dự toán, công nợ.
+Kế toán, báo cáo, quản trị: chứng từ xuất sang MISA, ánh xạ tài khoản và tham số, dashboard, báo cáo, người dùng và nhật ký.
+Hồ sơ CBCC.
+KPI: quản lý nhiệm vụ, nộp sản phẩm công việc, đánh giá và xếp loại cuối quý.
+Các phần mềm bên ngoài HTQT kết nối (UI chỉ cần hiển thị nhãn, trạng thái đồng bộ):
+Phần mềm
+Liên quan đến HTQT
+MISA eShop
+HTQT đẩy mặt hàng (mã hàng = mã lớp), tạo đơn ghi danh; đọc đơn bán về để đối soát. Doanh thu sân từ Alobo đi qua eShop, gắn cơ sở theo tiền tố mã mặt hàng.
+Hóa đơn điện tử
+HTQT lấy hóa đơn đã phát hành theo ngày, khớp với đơn bằng mã đơn.
+Ngân hàng
+Kế toán tải file sao kê lên HTQT; HTQT trích mã đơn từ nội dung chuyển khoản.
+MISA kế toán
+HTQT xuất file chứng từ để nhập vào MISA.
+3. Yêu cầu chung về giao diện
+Toàn bộ giao diện bằng tiếng Việt.
+Ứng dụng web, một giao diện cho mọi vai trò; menu và màn hình hiển thị theo vai trò của người đăng nhập.
+Responsive: các màn hình Quầy ghi danh, Đăng ký trực tuyến, Điểm danh, Kết ca và Bảng kê thù lao (phần giáo viên xác nhận) phải dùng tốt trên điện thoại.
+Người dùng nội bộ chọn cơ sở đang làm việc; số liệu lọc theo cơ sở.
+Học viên dùng màn hình Đăng ký trực tuyến không cần tài khoản.
+Ban Giám đốc, Phó Giám đốc Thường trực, kế toán thanh toán, kế toán tổng hợp và quản trị hệ thống đăng nhập có bước xác thực hai lớp (minh họa ô nhập mã xác nhận).
+Tiền hiển thị theo VND, có dấu phân cách hàng nghìn (ví dụ 1.500.000 đ); ngày theo dạng dd/mm/yyyy.
+Trạng thái của đơn, ghi danh, phiếu chi… hiển thị bằng nhãn màu (xem mục 8).
+Không có nút xóa dữ liệu nghiệp vụ; thay bằng thao tác Hủy kèm ô nhập lý do.
+Có thanh thông báo hoặc biểu tượng cảnh báo khi đồng bộ với phần mềm bên ngoài bị lỗi.
+4. Vai trò người dùng và menu
+Menu của mỗi vai trò chỉ gồm các màn hình vai trò đó được dùng (mã MH tham chiếu mục 5; CBCC và KPI ở mục 6, 7). Một người có thể có nhiều vai trò.
+Vai trò
+Màn hình được dùng
+Ban Giám đốc
+MH-02 Bảng giá, MH-17 Hộp duyệt, MH-21 Dashboard, MH-22 Báo cáo; KPI: Đánh giá, bình xét (BGĐ)
+Kế toán tổng hợp
+MH-01 Danh mục, MH-02 Bảng giá, MH-19 Chứng từ kế toán, MH-20 Ánh xạ tài khoản, tham số, MH-22 Báo cáo
+Kế toán thu
+MH-10 Nhập sao kê, MH-11 Đối soát, MH-12 Chốt ca, MH-19 Chứng từ kế toán, MH-22 Báo cáo
+Kế toán thanh toán
+MH-13 Hồ sơ giáo viên, hợp đồng giảng dạy, MH-14 Bảng kê thù lao, MH-16 Kiểm soát chi, MH-18 Hợp đồng, dự toán, công nợ, MH-22 Báo cáo
+Tổ trưởng Tổ Tài vụ
+MH-06 Lô thẻ
+Thủ quỹ
+MH-09 Kết ca (xác nhận)
+Trưởng cơ sở
+MH-11 Đối soát, MH-12 Chốt ca
+Nhân viên ghi danh
+MH-04 Quầy ghi danh, MH-07 Chuyển lớp, bảo lưu, MH-09 Kết ca
+Phòng Văn hóa
+MH-03 Kế hoạch chiêu sinh, MH-13 Hồ sơ giáo viên, hợp đồng giảng dạy
+Giáo viên
+MH-08 Điểm danh, MH-14 Bảng kê thù lao (xem, xác nhận)
+Học viên
+MH-05 Đăng ký trực tuyến (không đăng nhập)
+Quản trị hệ thống
+MH-23 Người dùng, nhật ký
+Mọi người dùng nội bộ
+MH-15 Đề xuất chi; KPI: Quản lý nhiệm vụ, Nộp sản phẩm công việc, Bảng tổng hợp đánh giá cuối quý
+Trưởng phòng TC-HC-QT
+Tạo tài khoản, phân quyền cho cả đơn vị; KPI: Danh mục công việc của đơn vị, Tổng hợp, tham mưu kết quả đánh giá; Hồ sơ CBCC
+Trưởng phòng, cán bộ phụ trách cơ sở
+KPI: phân công và Đánh giá, bình xét cho cấp phó, tổ trưởng, nhân viên cấp dưới
+Ghi chú: tài liệu chưa nêu vai trò nào được xem, sửa Hồ sơ CBCC. Trong bản nháp tạm cho Trưởng phòng TC-HC-QT dùng màn hình này; cần xác nhận lại với CVHLĐ.
+5. Danh sách màn hình HTQT
+Mã
+Màn hình
+Vai trò dùng
+Nội dung và thao tác cần thể hiện
+MH-01
+Danh mục cơ sở, dịch vụ, nguồn kinh phí
+Kế toán tổng hợp
+Ba tab danh mục; thêm, sửa, ngừng dùng; khai báo tiền tố mã mặt hàng cho từng cơ sở.
+MH-02
+Bảng giá
+Ban Giám đốc, kế toán tổng hợp
+Nhập quyết định giá (số, ngày hiệu lực), đơn giá theo dịch vụ; xem lịch sử phiên bản; giá đang hiệu lực không sửa được.
+MH-03
+Kế hoạch chiêu sinh
+Phòng Văn hóa
+Danh sách khóa, lớp (mã lớp, loại lớp, lịch, sĩ số, học phí, trạng thái); tạo khóa, lớp; nhân bản khóa trước; mở bán, đóng lớp; nút đẩy mặt hàng sang eShop.
+MH-04
+Quầy ghi danh
+Nhân viên ghi danh
+Ô tìm học viên theo số điện thoại hoặc tạo mới; chọn lớp còn chỗ; nhập số thẻ giấy; nút tạo đơn eShop; in biên nhận. Tối ưu điện thoại.
+MH-05
+Đăng ký trực tuyến
+Học viên
+Chọn lớp, nhập thông tin, tích đồng ý xử lý dữ liệu cá nhân; hiển thị mã VietQR có mã đơn và thời gian giữ chỗ; xem trạng thái đăng ký. Tối ưu điện thoại.
+MH-06
+Lô thẻ
+Tổ trưởng Tổ Tài vụ
+Giao lô thẻ (dải số) cho nhân viên; hủy thẻ có lý do; xem số thẻ đã dùng, còn lại.
+MH-07
+Chuyển lớp, bảo lưu
+Nhân viên ghi danh, người duyệt
+Tạo yêu cầu chuyển lớp hoặc bảo lưu; người duyệt đồng ý; cập nhật ghi danh.
+MH-08
+Điểm danh
+Giáo viên
+Danh sách lớp theo buổi; đánh dấu có mặt; ghi người lạ; báo nghỉ, dạy thay. Tối ưu điện thoại.
+MH-09
+Kết ca
+Nhân viên thu, thủ quỹ
+Tổng thu theo phương thức (tiền mặt, chuyển khoản, thẻ, khác); nhập kiểm đếm tiền mặt; hiển thị chênh lệch và ô giải trình; lập phiếu nộp quỹ; thủ quỹ xác nhận. Tối ưu điện thoại.
+MH-10
+Nhập sao kê
+Kế toán thu
+Tải file sao kê; kiểm tra cấu trúc; xem trước các dòng giao dịch; báo dòng trùng; nút ghi.
+MH-11
+Đối soát
+Kế toán thu, trưởng cơ sở
+Bảng đơn – hóa đơn – tiền theo ngày, cơ sở; lọc khớp và ngoại lệ; ô giải trình; ghép tay có ghi lý do.
+MH-12
+Chốt ca
+Trưởng cơ sở, kế toán thu
+Bảng kê ngày của cơ sở; nút xác nhận và khóa; sau khi khóa hiển thị trạng thái đã khóa, không sửa được.
+MH-13
+Hồ sơ giáo viên, hợp đồng giảng dạy
+Kế toán thanh toán, Phòng Văn hóa
+Thông tin giáo viên, mã số thuế, tài khoản ngân hàng; hợp đồng giảng dạy và tỷ lệ % thù lao.
+MH-14
+Bảng kê thù lao
+Kế toán thanh toán, giáo viên
+Bảng kê cuối khóa theo lớp (doanh thu, tỷ lệ %, thù lao, thuế TNCN, thực nhận); giáo viên xác nhận; kế toán duyệt; chuyển thành đề xuất chi; xuất file chi.
+MH-15
+Đề xuất chi
+Mọi người dùng nội bộ
+Lập phiếu (nội dung, số tiền, nguồn kinh phí, dự toán, hợp đồng nếu có); chọn Luồng A/B; đính kèm hồ sơ; theo dõi trạng thái.
+MH-16
+Kiểm soát chi
+Kế toán thanh toán
+Danh sách phiếu chờ kiểm; checklist hồ sơ; trả lại, tạm dừng kèm căn cứ; cảnh báo chia tách khoản chi; số dư dự toán.
+MH-17
+Hộp duyệt
+Ban Giám đốc
+Danh sách phiếu chờ duyệt; xem hồ sơ đính kèm; nút đồng ý, trả lại, từ chối kèm ý kiến.
+MH-18
+Hợp đồng, dự toán, công nợ
+Kế toán thanh toán
+Sổ hợp đồng và các đợt thanh toán; dự toán năm theo mục chi, nguồn kinh phí; danh sách công nợ đến hạn.
+MH-19
+Chứng từ kế toán
+Kế toán thu, kế toán tổng hợp
+Danh sách chứng từ chờ chuyển; xuất file MISA; đánh dấu đã chuyển; hủy chuyển (cần duyệt).
+MH-20
+Ánh xạ tài khoản, tham số
+Kế toán tổng hợp
+Cấu hình tài khoản kế toán; tỷ lệ thuế; giờ chốt sổ (21:00); bảng thẩm quyền duyệt theo số tiền.
+MH-21
+Dashboard
+Ban Giám đốc
+Các thẻ chỉ số và biểu đồ (doanh thu theo cơ sở, theo dịch vụ, số ngoại lệ chưa giải trình); lọc theo kỳ, cơ sở.
+MH-22
+Báo cáo
+Theo vai trò
+Bảng kê ngày, báo cáo tuần, tháng; nút xuất Excel, PDF.
+MH-23
+Người dùng, nhật ký
+Quản trị hệ thống
+Tài khoản, vai trò, cơ sở; nhật ký thao tác; nhật ký đồng bộ với các phần mềm bên ngoài.
+Ghi chú: tài liệu của CVHLĐ nêu dashboard có 8 chỉ số (BC-01 đến BC-08) nhưng chưa định nghĩa. Bản nháp dùng các chỉ số minh họa nêu trên.
+6. Màn hình Hồ sơ CBCC
+Gồm hai màn hình:
+Danh sách hồ sơ CBCC: danh sách cán bộ, công chức, viên chức, người lao động; tìm kiếm, lọc theo phòng ban, cơ sở; mở hồ sơ chi tiết.
+Chi tiết hồ sơ: 5 tab ngang theo đúng thứ tự:
+Thông tin hồ sơ – các mục dạng thu gọn, bấm để mở: Sơ lược lý lịch; Quá trình công tác; Quá trình đào tạo bồi dưỡng; Khen thưởng, kỷ luật; Đặc điểm lịch sử bản thân; Quá trình lương; Hợp đồng lao động; Đánh giá xếp loại.
+Thông tin khác.
+Lịch sử chỉnh sửa.
+Tài liệu đính kèm.
+Đã ký số.
+Ghi chú: tài liệu chưa nêu chi tiết các trường thông tin trong từng mục. Bản nháp chỉ dựng đúng cấu trúc tab và các mục, nội dung bên trong dùng dữ liệu mẫu đơn giản.
+7. Màn hình KPI
+Có hai loại nhiệm vụ, hiển thị bằng nhãn: Nhiệm vụ thường xuyên (định kỳ theo vị trí việc làm, hằng tuần, tháng, quý) và Nhiệm vụ đột xuất (cấp trên giao khẩn, phải hoàn thành trong 03 ngày làm việc). Kỳ đánh giá tính theo quý.
+7.1. Danh mục công việc của đơn vị (Giám đốc, Phó Giám đốc, Trưởng phòng TC-HC-QT)
+Bảng tổng hợp có biểu đồ và số liệu, tỷ lệ: tổng số nhiệm vụ, đã giao, chưa giao, đã hoàn thành.
+Danh sách toàn bộ nhiệm vụ của các phòng ban, bộ phận; tìm theo tên nhiệm vụ, đơn vị hoặc cá nhân phụ trách, kỳ đánh giá (quý).
+Thao tác: xem người phụ trách; chỉnh sửa, gia hạn thời hạn; giao trực tiếp cho nhân viên; xóa, hủy nhiệm vụ.
+7.2. Quản lý nhiệm vụ
+Phân công nhiệm vụ, hai tab: Tất cả (nhân sự toàn đơn vị; dành cho Giám đốc, Phó Giám đốc, Trưởng phòng TC-HC-QT) và Trực tiếp quản lý (nhân sự thuộc phòng, tổ, cơ sở mình phụ trách).
+Nhiệm vụ cá nhân:
+Nhiệm vụ tự đăng ký (cuối mỗi quý cho kỳ sau), có số lượng theo trạng thái: Đã duyệt, Chờ duyệt, Trả lại, Nháp.
+Nhiệm vụ được giao, có số lượng theo trạng thái: Đã xác nhận, Chờ xác nhận, Đã phản hồi (khi không tiếp nhận, kèm lý do).
+7.3. Nộp sản phẩm công việc
+Bốn tab có số lượng: Tất cả, Đang thực hiện, Quá hạn, Hoàn thành (đã nộp minh chứng); sắp xếp theo thời hạn hoàn thành.
+Lãnh đạo đánh giá từng sản phẩm (Khối Văn phòng) bằng danh sách chọn 5 mức:
+Bảo đảm đúng chủ trương, yêu cầu, có tính khả thi, được chấp nhận ngay hoặc chỉ phải hoàn thiện về kỹ thuật, thể thức, hình thức văn bản (100%)
+Cơ bản đáp ứng yêu cầu, phải hoàn thiện, chỉnh sửa một số nội dung nhưng không ảnh hưởng đến nội dung cốt lõi, chất lượng và kết quả thực hiện nhiệm vụ (75%)
+Chưa đáp ứng đầy đủ yêu cầu, phải hoàn thiện, chỉnh sửa nội dung cơ bản, ảnh hưởng đến chất lượng hoặc hiệu quả thực hiện nhiệm vụ (50%)
+Có sai sót nghiêm trọng về nội dung, phải hoàn thiện, chỉnh sửa cơ bản hoặc làm lại (25%)
+Không bảo đảm yêu cầu, sai chủ trương, quan điểm chỉ đạo hoặc sai nội dung căn bản, không được chấp nhận (0%)
+Tổ Vệ sinh, Kỹ thuật và Bảo vệ: tổ trưởng đánh giá theo công việc thường xuyên và độ hài lòng của khách hàng, chọn 1 trong 4 mức: Hoàn thành xuất sắc nhiệm vụ, Hoàn thành tốt nhiệm vụ, Hoàn thành nhiệm vụ, Không hoàn thành nhiệm vụ.
+7.4. Bảng tổng hợp đánh giá cuối quý (mỗi cá nhân)
+Thanh tiến độ quy trình đánh giá cuối quý.
+Phần 1 – Tiêu chí chung (30 điểm): Phẩm chất chính trị, phẩm chất đạo đức; ý thức kỷ luật, kỷ cương trong thực thi nhiệm vụ; chấp hành nội quy, quy chế của đơn vị / Năng lực chuyên môn, nghiệp vụ theo yêu cầu của vị trí việc làm; tinh thần trách nhiệm; thái độ phục vụ đoàn viên, người lao động; khả năng phối hợp trong công tác / Năng lực đổi mới, sáng tạo; dám nghĩ, dám làm, dám chịu trách nhiệm vì lợi ích chung.
+Phần 2 – Kết quả thực hiện nhiệm vụ (70 điểm): tổng hợp tự động từ Nộp sản phẩm công việc sau khi lãnh đạo đánh giá.
+Phần 3 – Đề xuất xếp loại: tổng điểm và mức xếp loại theo mốc HTXSNV ≥ 90 điểm; HTTNV 70 – 90 điểm; HTNV 50 – 69 điểm; KHTNV 0 – 49 điểm.
+Nút: Gửi, Lưu hồ sơ, Quay lại.
+7.5. Đánh giá, bình xét (lãnh đạo phòng, cán bộ phụ trách cơ sở)
+Xem mức đánh giá và minh chứng sản phẩm của nhân viên phụ trách; phê duyệt, biểu quyết mức xếp loại từng nhân viên.
+7.6. Tổng hợp, tham mưu kết quả đánh giá (Trưởng phòng TC-HC-QT)
+Xem bảng tự đánh giá và minh chứng của Trưởng phòng, cán bộ phụ trách cơ sở; đề xuất mức đánh giá cho Ban Giám đốc xem xét, biểu quyết.
+7.7. Đánh giá, bình xét (Ban Giám đốc)
+Xem mức đánh giá do Trưởng phòng TC-HC-QT tham mưu cho trưởng phòng, cán bộ phụ trách cơ sở; phê duyệt, biểu quyết mức xếp loại; xuất file tổng hợp kết quả biểu quyết và xếp loại.
+8. Trạng thái hiển thị và dữ liệu mẫu
+Các trạng thái dưới đây lấy từ tài liệu của CVHLĐ, hiển thị bằng nhãn tiếng Việt:
+Đối tượng
+Các trạng thái
+Lớp
+Nháp, Mở bán, Đủ sĩ số, Đóng, Kết thúc
+Ghi danh
+Giữ chỗ, Chờ thanh toán, Đã thanh toán, Chuyển lớp, Bảo lưu, Hủy; kênh: Quầy, Online
+Đối soát
+Khớp, Thiếu hóa đơn, Thiếu tiền, Thừa tiền, Không mã đơn, Lệch số tiền
+Bảng kê thù lao
+Nháp, Giáo viên xác nhận, Kế toán duyệt, Đã chuyển đề xuất chi
+Đề xuất chi
+Nháp, Chờ kế toán, Tạm dừng, Chờ duyệt, Đã duyệt, Từ chối, Đã chi
+Kết quả duyệt
+Đồng ý, Trả lại, Tạm dừng, Từ chối
+Nhiệm vụ KPI tự đăng ký
+Nháp, Chờ duyệt, Đã duyệt, Trả lại
+Nhiệm vụ KPI được giao
+Chờ xác nhận, Đã xác nhận, Đã phản hồi
+Sản phẩm công việc
+Đang thực hiện, Quá hạn, Hoàn thành
+Dữ liệu mẫu cho bản nháp:
+Đơn vị: Trụ sở và Cơ sở 1 đến Cơ sở 6.
+Lớp: vài lớp khiêu vũ và các loại lớp khác, có mã lớp, lịch học, sĩ số, học phí.
+Phương thức thanh toán: Tiền mặt, Chuyển khoản, Thẻ, Khác.
+Phòng ban mẫu cho KPI: Ban Giám đốc, Phòng TC-HC-QT, Phòng Văn hóa, Tổ Tài vụ, Tổ Vệ sinh, Kỹ thuật và Bảo vệ.
+Họ tên, số điện thoại, mã đơn, số tiền là dữ liệu giả, không dùng thông tin thật.
